@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wenlan (Tony) Xie — Economics · UChicago</title>
+<meta name="description" content="Wenlan (Tony) Xie — Economics student at the University of Chicago. Econometrics × Machine Learning × Financial Economics.">
+<meta property="og:title" content="Wenlan (Tony) Xie — Economics · UChicago">
+<meta property="og:description" content="Econometrics × Machine Learning × Financial Economics.">
+<meta property="og:url" content="https://wenlanxie.com/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2306080d'/><polyline points='10,70 30,45 45,58 65,30 90,42' fill='none' stroke='%2334d399' stroke-width='8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080d; --bg2:#0a0f16; --panel:#0d141d;
+  --ink:#e8edf2; --dim:#87919e; --faint:#3d4653;
+  --up:#34d399; --dn:#f87171; --amber:#fbbf24;
+  --line:rgba(255,255,255,.08);
+  --paper:#f2efe7; --paper2:#e9e5d9; --paperink:#12151a; --paperdim:#5a5f66;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Consolas,'Courier New',monospace;
+  --disp:'Space Grotesk',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--disp);overflow-x:hidden;line-height:1.6}
+::selection{background:var(--up);color:#04140c}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#232c38;border-radius:5px}
+::-webkit-scrollbar-thumb:hover{background:#34d399}
+a{color:inherit}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;transition:transform .7s cubic-bezier(.77,0,.18,1),opacity .5s}
+#loader.done{transform:translateY(-100%);opacity:.4;pointer-events:none}
+#bootlog{font-family:var(--mono);font-size:13px;color:var(--dim);width:min(460px,86vw)}
+#bootlog div{opacity:0;animation:bootline .25s forwards}
+#bootlog .ok{color:var(--up)}
+#bootlog div:nth-child(1){animation-delay:.1s}
+#bootlog div:nth-child(2){animation-delay:.4s}
+#bootlog div:nth-child(3){animation-delay:.7s}
+#bootlog div:nth-child(4){animation-delay:1s}
+@keyframes bootline{to{opacity:1}}
+
+/* ---------- fixed chrome ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:20px 32px;mix-blend-mode:difference}
+.logo{font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:.08em;text-decoration:none}
+.logo b{background:var(--amber);color:#111;padding:1px 5px;font-weight:600}
+nav{display:flex;gap:26px}
+nav a{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-decoration:none;color:var(--ink);opacity:.75;transition:opacity .2s;position:relative}
+nav a:hover{opacity:1}
+nav a::after{content:"";position:absolute;left:0;bottom:-4px;height:1px;width:0;background:var(--up);transition:width .25s}
+nav a:hover::after{width:100%}
+nav a.cur{opacity:1;color:var(--up)}
+nav a.cur::after{width:100%}
+@media(max-width:820px){nav{display:none}}
+
+/* right rail: index counter + dots */
+#rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:22px}
+#wxi{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);writing-mode:vertical-rl;transition:color .3s}
+#wxi b{color:var(--up);font-weight:500}
+#dots{display:flex;flex-direction:column;gap:12px}
+#dots a{width:7px;height:7px;border-radius:50%;background:var(--faint);display:block;transition:all .3s;border:1px solid transparent}
+#dots a.on{background:var(--up);box-shadow:0 0 8px rgba(52,211,153,.7);transform:scale(1.25)}
+#rail.onlight #wxi{color:#6a6f76}
+#rail.onlight #dots a{background:#c8c2b2}
+#rail.onlight #dots a.on{background:#12151a;box-shadow:none}
+@media(max-width:820px){#rail{display:none}}
+
+/* ---------- shared section bits ---------- */
+section{position:relative;padding:120px 0}
+.wrap{width:min(1180px,90vw);margin:0 auto;position:relative;z-index:2}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--up);display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.kicker::after{content:"";height:1px;flex:0 0 60px;background:var(--up);opacity:.5}
+.h-huge{font-weight:700;line-height:.92;letter-spacing:-.02em;font-size:clamp(3.2rem,9vw,7.5rem);text-transform:uppercase}
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.rv.on{opacity:1;transform:none}
+.rv2{transition-delay:.12s}.rv3{transition-delay:.24s}.rv4{transition-delay:.36s}
+
+/* ---------- hero ---------- */
+#hero{min-height:100vh;display:flex;align-items:flex-end;padding:0 0 11vh;overflow:hidden}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+#hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 30% 75%,transparent 30%,rgba(6,8,13,.72) 100%);z-index:1;pointer-events:none}
+.hero-kick{font-family:var(--mono);font-size:12.5px;letter-spacing:.28em;color:var(--dim);margin-bottom:22px}
+.hero-kick span{color:var(--up)}
+#hero h1{font-weight:700;line-height:.9;letter-spacing:-.03em;font-size:clamp(4rem,13vw,10.5rem);text-transform:uppercase}
+#hero h1 .thin{color:transparent;-webkit-text-stroke:1.5px rgba(232,237,242,.85)}
+.hero-sub{font-family:var(--mono);font-size:clamp(11px,1.4vw,14px);letter-spacing:.16em;color:var(--ink);margin-top:30px}
+.hero-sub .x{color:var(--up);padding:0 .35em}
+.cursor{display:inline-block;width:.55em;height:1.05em;background:var(--up);vertical-align:text-bottom;margin-left:6px;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.scrollhint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--dim);z-index:2;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,7px)}}
+
+/* ticker */
+#ticker{position:absolute;left:0;right:0;bottom:0;z-index:3;border-top:1px solid var(--line);background:rgba(6,8,13,.66);backdrop-filter:blur(6px);overflow:hidden;white-space:nowrap}
+#ticker .belt{display:inline-block;padding:9px 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--dim);animation:belt 75s linear infinite}
+#ticker:hover .belt{animation-play-state:paused}
+#ticker .belt span{margin:0 26px}
+#ticker .u{color:var(--up)}#ticker .d{color:var(--dn)}
+@keyframes belt{to{transform:translateX(-50%)}}
+
+/* ---------- about ---------- */
+#about{background:linear-gradient(var(--bg) 0%,var(--bg2) 100%)}
+.about-grid{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr}}
+.photo{position:relative;border:1px solid var(--line);padding:14px;background:var(--panel)}
+.photo::before,.photo::after{content:"";position:absolute;width:18px;height:18px;border:1.5px solid var(--up)}
+.photo::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.photo::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.photo img{width:100%;display:block;filter:grayscale(1) contrast(1.06);transition:filter .5s}
+.photo:hover img{filter:none}
+.photo figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);padding-top:12px}
+.photo.noimg img{display:none}
+.photo.noimg .mono-fallback{display:flex}
+.mono-fallback{display:none;aspect-ratio:3/4;align-items:center;justify-content:center;font-family:var(--mono);font-size:64px;color:var(--faint);background:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(255,255,255,.02) 12px,rgba(255,255,255,.02) 24px)}
+.bio p{color:#c3ccd6;font-size:17px;max-width:56ch;margin-bottom:18px}
+.bio b{color:var(--ink)}
+.edu{margin-top:34px;border-top:1px solid var(--line)}
+.edu li{list-style:none;display:grid;grid-template-columns:120px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.edu .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--up);padding-top:3px}
+.edu .deg{color:#c3ccd6}
+.edu .deg em{color:var(--dim);font-style:normal;font-size:13px;display:block}
+/* regression toy */
+#fitbox{margin-top:44px;border:1px solid var(--line);background:var(--panel);position:relative}
+#fitCanvas{width:100%;height:280px;display:block}
+.fitbar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:10px 16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--dim);flex-wrap:wrap;gap:8px}
+.fitbar .est{color:var(--up)}
+#refit{font-family:var(--mono);font-size:11px;letter-spacing:.14em;background:none;border:1px solid var(--up);color:var(--up);padding:6px 14px;cursor:pointer;transition:all .25s}
+#refit:hover{background:var(--up);color:#04140c}
+.fitlabel{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--dim)}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:64px}
+@media(max-width:700px){.stats{grid-template-columns:1fr}}
+.stat{background:var(--bg2);padding:26px 24px}
+.stat .n{font-family:var(--mono);font-size:44px;font-weight:600;color:var(--ink);line-height:1}
+.stat .n i{color:var(--up);font-style:normal}
+.stat .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);margin-top:10px}
+
+/* ---------- research ---------- */
+#research{background:var(--bg)}
+.lede{color:#c3ccd6;font-size:clamp(17px,2vw,21px);max-width:62ch;margin-bottom:64px}
+.lede b{color:var(--up);font-weight:500}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.cards{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);background:var(--panel);padding:0 0 22px;transition:transform .3s,border-color .3s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-6px);border-color:rgba(52,211,153,.45)}
+.card canvas{width:100%;height:64px;display:block;opacity:.9}
+.card h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;color:var(--up);padding:18px 22px 10px}
+.card ul{padding:0 22px;list-style:none}
+.card li{font-size:14px;color:#b9c2cc;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.07)}
+.card li:last-child{border:0}
+.card li::before{content:"▸ ";color:var(--faint)}
+.xp{margin-top:80px;border-top:1px solid var(--line)}
+.xp-row{display:grid;grid-template-columns:190px 1fr;gap:26px;padding:34px 0;border-bottom:1px solid var(--line)}
+@media(max-width:820px){.xp-row{grid-template-columns:1fr;gap:10px}}
+.xp-meta{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--dim);line-height:2}
+.xp-meta .org{color:var(--amber)}
+.xp-body h4{font-size:20px;font-weight:500;letter-spacing:-.01em;margin-bottom:10px}
+.xp-body p{color:#a9b3bf;font-size:15px;max-width:72ch}
+
+/* ---------- publications (light flip) ---------- */
+#pubs{background:var(--paper);color:var(--paperink)}
+#pubs .kicker{color:#0f7a54}
+#pubs .kicker::after{background:#0f7a54}
+#pubs ::selection{background:#12151a;color:var(--paper)}
+.pub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:70px}
+.pub-count{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;color:var(--paperdim);text-align:right;line-height:2}
+.pub-count b{color:var(--paperink);font-size:15px}
+.publist{list-style:none;counter-reset:pub}
+.publist>li{display:grid;grid-template-columns:110px 1fr;gap:28px;padding:30px 0;border-top:1px solid #d5cfbe;transition:background .25s}
+.publist>li:hover{background:var(--paper2)}
+.publist>li:last-child{border-bottom:1px solid #d5cfbe}
+@media(max-width:700px){.publist>li{grid-template-columns:1fr;gap:8px}}
+.pub-yr{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--paperdim);padding-top:5px}
+.pub-yr::before{counter-increment:pub;content:"№" counter(pub,decimal-leading-zero);display:block;color:#b3ac97;margin-bottom:4px}
+.pub-t{font-size:19px;font-weight:500;line-height:1.35;letter-spacing:-.01em}
+.pub-a{font-size:14px;color:var(--paperdim);margin-top:8px}
+.pub-a mark{background:var(--amber);color:#111;padding:0 4px;font-weight:500}
+.pub-a .role{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;background:#12151a;color:var(--paper);padding:1px 7px;border-radius:2px;margin-left:2px}
+.pub-j{font-size:14px;font-style:italic;color:#0f7a54;margin-top:5px}
+.subcols{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:90px}
+@media(max-width:820px){.subcols{grid-template-columns:1fr}}
+.subcols h3{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--paperdim);border-bottom:2px solid var(--paperink);padding-bottom:12px;margin-bottom:20px}
+.conf{list-style:none}
+.conf li{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:10px 0;border-bottom:1px solid #d5cfbe;font-size:14.5px}
+.conf .y{font-family:var(--mono);font-size:12px;color:#0f7a54;padding-top:2px}
+.svc{font-size:14.5px;color:#3c4149;line-height:2.05}
+.svc em{font-style:normal;border-bottom:1px solid #b3ac97}
+
+/* ---------- news / log ---------- */
+#log{background:var(--bg2)}
+.loglist{list-style:none;border-top:1px solid var(--line);margin-top:10px}
+.loglist li{display:grid;grid-template-columns:130px 84px 1fr;gap:22px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);font-size:15.5px;color:#c3ccd6}
+@media(max-width:700px){.loglist li{grid-template-columns:1fr;gap:6px}}
+.loglist .ts{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--dim)}
+.loglist .ev{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--up)}
+.loglist .ev.d{color:var(--amber)}
+.loglist i{color:var(--dim)}
+
+/* ---------- contact ---------- */
+#contact{min-height:88vh;display:flex;align-items:center;background:var(--bg);overflow:hidden}
+#pulseCanvas{position:absolute;inset:auto 0 0 0;width:100%;height:180px;opacity:.5;z-index:0}
+.mail{display:inline-block;font-weight:700;font-size:clamp(1.6rem,4.6vw,3.6rem);letter-spacing:-.02em;text-decoration:none;margin:26px 0 40px;position:relative}
+.mail::after{content:"";position:absolute;left:0;bottom:-6px;height:3px;width:100%;background:var(--up);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.mail:hover::after{transform:scaleX(1)}
+.chips{display:flex;gap:14px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12px;letter-spacing:.14em;border:1px solid var(--line);padding:10px 20px;text-decoration:none;color:var(--ink);transition:all .25s;display:inline-flex;gap:8px;align-items:center}
+.chip:hover{border-color:var(--up);color:var(--up);transform:translateY(-2px)}
+.coords{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;color:var(--dim);margin-top:60px}
+footer{border-top:1px solid var(--line);padding:26px 32px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);background:var(--bg)}
+footer .u{color:var(--up)}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div id="bootlog">
+    <div>$ import wenlan_xie as wx</div>
+    <div>&gt; loading market data <span class="ok">........ ok</span></div>
+    <div>&gt; estimating parameters <span class="ok">β̂ converged</span></div>
+    <div>&gt; rendering <span class="ok">R² = 0.99</span></div>
+  </div>
+</div>
+
+<header>
+  <a class="logo" href="#hero"><b>Xie, W.</b>&nbsp;(Tony)</a>
+  <nav>
+    <a href="#about">ABOUT</a>
+    <a href="#research">RESEARCH</a>
+    <a href="#pubs">PUBLICATIONS</a>
+    <a href="#log">LOG</a>
+    <a href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<div id="rail">
+  <div id="wxi">WXI <b>1000.00</b></div>
+  <div id="dots">
+    <a href="#hero" aria-label="Top"></a>
+    <a href="#about" aria-label="About"></a>
+    <a href="#research" aria-label="Research"></a>
+    <a href="#pubs" aria-label="Publications"></a>
+    <a href="#log" aria-label="News log"></a>
+    <a href="#contact" aria-label="Contact"></a>
+  </div>
+</div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="wrap" style="z-index:2">
+    <p class="hero-kick" data-plx="0.18">ECONOMICS · THE UNIVERSITY OF CHICAGO · <span>EST. SIGNAL &gt; NOISE</span></p>
+    <h1 data-plx="0.1">Wenlan<br><span class="thin">Xie</span></h1>
+    <p class="hero-sub" data-plx="0.05">ECONOMETRICS<span class="x">×</span>MACHINE LEARNING<span class="x">×</span>FINANCIAL ECONOMICS<span class="cursor"></span></p>
+  </div>
+  <div class="scrollhint">SCROLL ▼</div>
+  <div id="ticker"><div class="belt" id="belt"></div></div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section id="about">
+  <div class="wrap">
+    <p class="kicker rv">§01 / ABOUT</p>
+    <h2 class="h-huge rv rv2" style="margin-bottom:64px">The<br>Author</h2>
+    <div class="about-grid">
+      <figure class="photo rv rv2">
+        <img src="images/portrait.jpg" alt="Wenlan (Tony) Xie" onerror="this.closest('.photo').classList.add('noimg')">
+        <div class="mono-fallback">W.X</div>
+        <!-- <figcaption>FIG. 1 — THE AUTHOR · CHICAGO, IL</figcaption> -->
+      </figure>
+      <div class="bio">
+        <p class="rv">I am an Economics student at <b>The University of Chicago</b>. Previously, I obtained my Master of Commerce in Data Analytics from the University of Sydney <b>(Distinction)</b> and my Bachelor's degree from the University of Canterbury.</p>
+        <p class="rv rv2">My primary research interests lie at the intersection of <b>Econometrics</b>, <b>Machine Learning</b>, and <b>Financial Economics</b> — turning unstructured data into economic insight.</p>
+        <ul class="edu rv rv3">
+          <li><span class="tag">CURRENT</span><span class="deg">The University of Chicago<em>Economics</em></span></li>
+          <li><span class="tag">M.COM</span><span class="deg">University of Sydney<em>Data Analytics · with Distinction</em></span></li>
+          <li><span class="tag">B.A.</span><span class="deg">University of Canterbury</span></li>
+        </ul>
+        <div id="fitbox" class="rv rv4">
+          <span class="fitlabel">FIG. 2 — ORDINARY LEAST SQUARES, LIVE</span>
+          <canvas id="fitCanvas"></canvas>
+          <div class="fitbar">
+            <span>ŷ = α̂ + β̂x &nbsp;·&nbsp; <span class="est" id="est">β̂ = — , R² = —</span></span>
+            <button id="refit">RE-ESTIMATE ↻</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat rv"><div class="n" data-count="7">0</div><div class="l">PEER-REVIEWED ARTICLES</div></div>
+      <div class="stat rv rv2"><div class="n" data-count="7">0</div><div class="l">CONFERENCE PRESENTATIONS</div></div>
+      <div class="stat rv rv3"><div class="n" data-count="9">0</div><div class="l">JOURNALS REFEREED FOR</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RESEARCH ═══════════ -->
+<section id="research">
+  <div class="wrap">
+    <p class="kicker rv">§02 / RESEARCH</p>
+    <h2 class="h-huge rv rv2" style="margin-bottom:56px">Method<br>&amp; Madness</h2>
+    <p class="lede rv rv3">My work bridges the gap between <b>unstructured data</b> and <b>economic theory</b>. I apply computational methods and causal inference strategies to uncover behavioral anomalies and understand market dynamics — currently, constructing novel datasets from textual information to predict market returns and analyze investor behavior.</p>
+    <div class="cards">
+      <div class="card rv"><canvas class="spark" data-seed="3"></canvas><h3>ECONOMETRICS</h3>
+        <ul><li>Causal Inference — DID · IV · RDD</li><li>Panel Regression</li><li>Time Series Analysis</li><li>Monte Carlo Simulation</li></ul></div>
+      <div class="card rv rv2"><canvas class="spark" data-seed="7"></canvas><h3>MACHINE LEARNING</h3>
+        <ul><li>NLP · LLM-based Sentiment</li><li>TensorFlow · PyTorch</li><li>Scikit-learn</li><li>Text-as-data pipelines</li></ul></div>
+      <div class="card rv rv3"><canvas class="spark" data-seed="11"></canvas><h3>TOOLKIT</h3>
+        <ul><li>Python · R · Stata</li><li>SQL</li><li>LaTeX</li><li>JavaScript</li></ul></div>
+    </div>
+    <div class="xp">
+      <div class="xp-row rv">
+        <div class="xp-meta">RESEARCH ASSISTANT<br><span class="org">UCHICAGO</span></div>
+        <div class="xp-body">
+          <h4>Econometric Identification &amp; Replication</h4>
+          <p>Replicating empirical tables and figures by translating partial identification strategies into Python/R code. Designing Monte Carlo simulations to evaluate finite-sample bias and variance of new estimators.</p>
+        </div>
+      </div>
+      <div class="xp-row rv">
+        <div class="xp-meta">RESEARCH ASSISTANT<br><span class="org">HKU</span></div>
+        <div class="xp-body">
+          <h4>Corporate Disclosure &amp; Environmental Regulation</h4>
+          <p>Constructed a large-scale dataset by crawling hundreds of thousands of corporate disclosure records. Estimated the causal impact of environmental regulations on firm behavior using quasi-experimental designs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PUBLICATIONS ═══════════ -->
+<section id="pubs">
+  <div class="wrap">
+    <p class="kicker rv">§03 / OUTPUT</p>
+    <div class="pub-head">
+      <h2 class="h-huge rv rv2">Publica&#8202;—<br>tions</h2>
+      <div class="pub-count rv rv3"><b>7 of 7</b><br>PEER-REVIEWED JOURNAL ARTICLES<br>BY XIE, W.</div>
+    </div>
+    <ol class="publist">
+      <li class="rv"><span class="pub-yr">2026</span><div>
+        <div class="pub-t">Integrating Monetary and Environmental Goals: Exploring the Impact of Green Monetary Policy on Corporate Environmental Disclosure</div>
+        <div class="pub-a">Tian, H., <mark>Xie, W.</mark><span class="role">CORR.</span>, &amp; Zhang, Y.</div>
+        <div class="pub-j">Accounting Forum, forthcoming</div></div></li>
+      <li class="rv"><span class="pub-yr">2026</span><div>
+        <div class="pub-t">Reading Between the Reels: AI-Powered Analysis on Movie Review Sentiment as a Predictor of Market Returns</div>
+        <div class="pub-a">Tian, H., <mark>Xie, W.</mark><span class="role">CORR.</span>, &amp; Zhang, Y.</div>
+        <div class="pub-j">International Journal of Finance and Economics, 0:1–33</div></div></li>
+      <li class="rv"><span class="pub-yr">2025</span><div>
+        <div class="pub-t">From Responsibility to Resilience: How Targeted Poverty Alleviation Strengthens Firms</div>
+        <div class="pub-a">Tian, H., Sun, K., &amp; <mark>Xie, W.</mark><span class="role">CORR.</span></div>
+        <div class="pub-j">Post-Communist Economies, 37(4), 386–403</div></div></li>
+      <li class="rv"><span class="pub-yr">2024</span><div>
+        <div class="pub-t">Green Effect of Energy Transition Policy: A Quasi-natural Experiment Based on New Energy Demonstration Cities</div>
+        <div class="pub-a">Yu, Z., <mark>Xie, W.</mark><span class="role">CO-FIRST</span>, Guo, J., &amp; Yang, Z.</div>
+        <div class="pub-j">Finance Research Letters, 105669</div></div></li>
+      <li class="rv"><span class="pub-yr">2024</span><div>
+        <div class="pub-t">Dual Green Innovation Capability, Environmental Regulation Intensity, and High-Quality Economic Development in China</div>
+        <div class="pub-a">Guo, Y., <mark>Xie, W.</mark>, &amp; Yang, Y.</div>
+        <div class="pub-j">Finance Research Letters, 63, 105275</div></div></li>
+      <li class="rv"><span class="pub-yr">2024</span><div>
+        <div class="pub-t">Nexus of Green Energy Innovation, Governance Quality, and CO₂ Emissions in Natural Resource Sector</div>
+        <div class="pub-a">Zhang, S., <mark>Xie, W.</mark>, Sun, S., Wu, F., &amp; Xue, Y.</div>
+        <div class="pub-j">Resources Policy, 88, 104493</div></div></li>
+      <li class="rv"><span class="pub-yr">2023</span><div>
+        <div class="pub-t">The Effect of the COVID-19 Pandemic on Corporate Trade Credit Financing</div>
+        <div class="pub-a"><mark>Xie, W.</mark>, &amp; Tian, H.</div>
+        <div class="pub-j">Economics Letters, 232, 111339</div></div></li>
+    </ol>
+    <div class="subcols">
+      <div class="rv">
+        <h3>SELECTED CONFERENCE PRESENTATIONS</h3>
+        <ul class="conf">
+          <li><span class="y">2026</span><span>AMA Winter Academic Conference — Madrid, Spain</span></li>
+          <li><span class="y">2025</span><span>INFORMS International Meeting — Singapore</span></li>
+          <li><span class="y">2024</span><span>INFORMS Annual Meeting — Seattle, US</span></li>
+          <li><span class="y">2024</span><span>Global Chinese Accounting Association Summit — Perth</span></li>
+          <li><span class="y">2024</span><span>INFORMS Marketing Science Conference — Sydney</span></li>
+          <li><span class="y">2024</span><span>5th Vietnam Symposium on Global Economic Issues — Ho Chi Minh City</span></li>
+          <li><span class="y">2024</span><span>Green Finance and Accounting Conference — Shanghai</span></li>
+        </ul>
+      </div>
+      <div class="rv rv2">
+        <h3>ACADEMIC SERVICE — REFEREE FOR</h3>
+        <p class="svc"><em>Applied Economics</em> · <em>Applied Economics Letters</em> · <em>Review of Quantitative Finance and Accounting</em> · <em>Finance Research Letters</em> · <em>International Review of Economics &amp; Finance</em> · <em>Scientific Reports</em> · <em>Information Processing &amp; Management</em> · <em>Economics of Governance</em> · <em>Discover Sustainability</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LOG ═══════════ -->
+<section id="log">
+  <div class="wrap">
+    <p class="kicker rv">§04 / LOG</p>
+    <h2 class="h-huge rv rv2" style="margin-bottom:40px">Latest<br>Prints</h2>
+    <ul class="loglist">
+      <li class="rv"><span class="ts">2026-03</span><span class="ev">▲ PUBLISHED</span><span>“Integrating Monetary and Environmental Goals” — <i>Accounting Forum</i></span></li>
+      <li class="rv rv2"><span class="ts">2026-02</span><span class="ev d">◆ ACCEPTED</span><span>Paper to be presented at the <i>2026 AMA Winter Academic Conference</i>, Madrid</span></li>
+      <li class="rv rv3"><span class="ts">2026-01</span><span class="ev">▲ PUBLISHED</span><span>“Reading Between the Reels” — <i>International Journal of Finance and Economics</i></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════ CONTACT ═══════════ -->
+<section id="contact">
+  <canvas id="pulseCanvas"></canvas>
+  <div class="wrap">
+    <p class="kicker rv">§05 / CONTACT</p>
+    <h2 class="h-huge rv rv2">Long<br>this idea?</h2>
+    <a class="mail rv rv3" href="mailto:wenlanx@uchicago.edu">wenlanx@uchicago.edu</a>
+    <div class="chips rv rv4">
+      <a class="chip" href="https://scholar.google.com/citations?user=c6KbPykAAAAJ" target="_blank" rel="noopener">⌂ GOOGLE SCHOLAR</a>
+      <a class="chip" href="https://github.com/WLXie-Tony" target="_blank" rel="noopener">⌥ GITHUB</a>
+    </div>
+    <p class="coords rv rv4">41.7943° N, 87.5907° W — CHICAGO, ILLINOIS, UNITED STATES</p>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 WENLAN (TONY) XIE. ALL RIGHTS RESERVED.</span>
+  <span>WXI <span class="u" id="wxiFoot">▲ CLOSED HIGHER</span> · NO COOKIES · NO TRACKING</span>
+</footer>
+
+<script>
+(() => {
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+/* ---------- seeded rng ---------- */
+const mulberry=(a)=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+
+/* ---------- loader ---------- */
+const loader=$('#loader');
+const killLoader=()=>loader.classList.add('done');
+setTimeout(killLoader, reduced?100:1600);
+['wheel','touchstart','click','keydown'].forEach(e=>addEventListener(e,killLoader,{once:true,passive:true}));
+
+/* ---------- ticker ---------- */
+const items=[
+ ['u','WXI ▲ +2.31%'],['','ECONOMICS LETTERS 232 · 111339'],['u','ACCT FORUM ▲ FORTHCOMING'],
+ ['','INT J FIN &amp; ECON 0:1–33'],['d','NOISE ▼ −1.02%'],['','FINANCE RESEARCH LETTERS ×2'],
+ ['u','SIGNAL ▲ +0.87%'],['','POST-COMMUNIST ECONOMIES 37(4)'],['','RESOURCES POLICY 88 · 104493'],
+ ['u','CAUSALITY ▲ IDENTIFIED'],['','DID · IV · RDD · PANEL · NLP'],['d','P-VALUE ▼ 0.001']];
+const belt=$('#belt');
+belt.innerHTML=(items.concat(items)).map(([c,t])=>`<span class="${c}">${t}</span>`).join('');
+
+/* ---------- reveal on scroll ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}}),{threshold:.12});
+$$('.rv').forEach(el=>io.observe(el));
+
+/* ---------- count-up stats ---------- */
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;cio.unobserve(e.target);
+  const el=e.target,t=+el.dataset.count,st=performance.now();
+  const tick=n=>{const p=Math.min(1,(n-st)/900);el.innerHTML=Math.round(t*(1-Math.pow(1-p,3)))+'<i>+</i>';if(p<1)requestAnimationFrame(tick);};
+  requestAnimationFrame(tick);
+}),{threshold:.6});
+$$('[data-count]').forEach(el=>cio.observe(el));
+
+/* ---------- rail: dots + WXI index ---------- */
+const secs=['hero','about','research','pubs','log','contact'].map(id=>document.getElementById(id));
+const dots=$$('#dots a'), wxi=$('#wxi b'), rail=$('#rail');
+let ticking=false;
+const onScroll=()=>{
+  if(ticking)return;ticking=true;
+  requestAnimationFrame(()=>{
+    ticking=false;
+    const y=scrollY, max=document.documentElement.scrollHeight-innerHeight;
+    const p=max>0?y/max:0;
+    wxi.textContent=(1000+p*103.42).toFixed(2);
+    let cur=0;
+    secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<=innerHeight*.5)cur=i;});
+    dots.forEach((d,i)=>d.classList.toggle('on',i===cur));
+    $$('nav a').forEach((a,i)=>a.classList.toggle('cur',i===cur-1));
+    rail.classList.toggle('onlight',secs[3].getBoundingClientRect().top<innerHeight*.5&&secs[3].getBoundingClientRect().bottom>innerHeight*.5);
+    if(!reduced)$$('[data-plx]').forEach(el=>{el.style.transform=`translateY(${y*+el.dataset.plx}px)`;});
+  });
+};
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* ---------- hero canvas: drifting price paths ---------- */
+const hc=$('#heroCanvas'),hx=hc.getContext('2d');
+let W,H,dpr=Math.min(devicePixelRatio||1,2);
+const sizeHero=()=>{W=hc.clientWidth;H=hc.clientHeight;hc.width=W*dpr;hc.height=H*dpr;hx.setTransform(dpr,0,0,dpr,0,0);};
+sizeHero();addEventListener('resize',sizeHero);
+const N=220;
+const mkSeries=(seed,vol,drift)=>{const r=mulberry(seed);let v=.5+r()*.2;const pts=[];for(let i=0;i<N;i++){v+=(r()-.5)*vol+drift;v=Math.max(.08,Math.min(.92,v));pts.push(v);}return{r,vol,drift,pts,disp:pts[pts.length-1]};};
+const series=[
+ Object.assign(mkSeries(42,.024,.0009),{col:'rgba(52,211,153,',w:1.6,glow:'#34d399'}),
+ Object.assign(mkSeries(7,.03,-.0002),{col:'rgba(232,237,242,',w:1,glow:'#94a3b8'}),
+ Object.assign(mkSeries(99,.04,.0004),{col:'rgba(251,191,36,',w:1,glow:'#fbbf24'}),
+];
+/* crosshair (desktop only) */
+let cmx=-1,cmy=-1;
+if(matchMedia('(pointer:fine)').matches){
+  const heroSec=$('#hero');
+  heroSec.addEventListener('mousemove',e=>{const b=hc.getBoundingClientRect();cmx=e.clientX-b.left;cmy=e.clientY-b.top;});
+  heroSec.addEventListener('mouseleave',()=>{cmx=cmy=-1;});
+}
+let heroOn=true,off=0,dist=0,drewStatic=false;
+const SPEED=.45; /* px per frame — calm conveyor drift */
+new IntersectionObserver(es=>heroOn=es[0].isIntersecting).observe(hc);
+const drawHero=()=>{
+  requestAnimationFrame(drawHero);
+  if(!heroOn)return;
+  if(reduced){if(drewStatic)return;drewStatic=true;}
+  const step=W/(N-3);
+  off+=SPEED;dist+=SPEED;
+  while(off>=step){off-=step;series.forEach(s=>{s.pts.push(Math.max(.08,Math.min(.92,s.pts[s.pts.length-1]+(s.r()-.5)*s.vol+s.drift)));s.pts.shift();});}
+  hx.clearRect(0,0,W,H);
+  /* grid drifts with the tape */
+  hx.strokeStyle='rgba(255,255,255,.04)';hx.lineWidth=1;hx.beginPath();
+  for(let gx=90-(dist%90);gx<W;gx+=90){hx.moveTo(gx,0);hx.lineTo(gx,H);}
+  for(let gy=0;gy<H;gy+=90){hx.moveTo(0,gy);hx.lineTo(W,gy);}
+  hx.stroke();
+  /* axis labels */
+  hx.fillStyle='rgba(135,145,158,.5)';hx.font='10px IBM Plex Mono,monospace';
+  for(let gy=90;gy<H;gy+=180)hx.fillText((1200-gy).toFixed(0),W-46,gy-6);
+  series.forEach(s=>{
+    hx.beginPath();
+    s.pts.forEach((v,i)=>{const px=i*step-off,py=H*(1-v);i?hx.lineTo(px,py):hx.moveTo(px,py);});
+    hx.strokeStyle=s.col+'.75)';hx.lineWidth=s.w;hx.shadowColor=s.glow;hx.shadowBlur=s.w>1?9:0;hx.stroke();hx.shadowBlur=0;
+    /* fill under main series */
+    if(s.w>1){hx.lineTo(W,H);hx.lineTo(-step,H);hx.closePath();
+      const g=hx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(52,211,153,.14)');g.addColorStop(1,'rgba(52,211,153,0)');
+      hx.fillStyle=g;hx.fill();}
+    /* last-price chip — value eases toward target instead of jumping */
+    s.disp+=(s.pts[s.pts.length-1]-s.disp)*.045;
+    const py=H*(1-s.disp);
+    hx.fillStyle=s.col+'.95)';hx.fillRect(W-56,py-9,52,16);
+    hx.fillStyle='#06080d';hx.fillText((1000+s.disp*200).toFixed(2),W-52,py+3);
+  });
+  /* crosshair + readout */
+  if(cmx>=0&&cmy>=0&&cmy<=H&&!reduced){
+    hx.save();hx.setLineDash([4,4]);hx.strokeStyle='rgba(232,237,242,.2)';hx.lineWidth=1;
+    hx.beginPath();hx.moveTo(cmx,0);hx.lineTo(cmx,H);hx.moveTo(0,cmy);hx.lineTo(W,cmy);hx.stroke();hx.restore();
+    hx.fillStyle='rgba(13,20,29,.92)';hx.fillRect(W-62,cmy-9,58,16);
+    hx.strokeStyle='rgba(232,237,242,.3)';hx.strokeRect(W-62,cmy-9,58,16);
+    hx.fillStyle='#e8edf2';hx.fillText((1000+(1-cmy/H)*200).toFixed(2),W-56,cmy+3);
+  }
+};
+drawHero();
+
+/* ---------- OLS toy ---------- */
+const fc=$('#fitCanvas'),fx=fc.getContext('2d');
+let fitSeed=1,fitAnim=null;
+const sizeFit=()=>{fc.width=fc.clientWidth*dpr;fc.height=fc.clientHeight*dpr;fx.setTransform(dpr,0,0,dpr,0,0);};
+const runFit=()=>{
+  sizeFit();
+  const w=fc.clientWidth,h=fc.clientHeight,pad=34;
+  const r=mulberry(fitSeed*7919+13);
+  const b=.35+r()*.5,a=.15+r()*.2,n=85;
+  const pts=[];for(let i=0;i<n;i++){const x=r();const y=a+b*x+(r()-.5)*.34;pts.push([x,Math.max(.02,Math.min(.98,y))]);}
+  const X=x=>pad+x*(w-2*pad), Y=y=>h-pad-y*(h-2*pad);
+  /* real OLS */
+  const mx=pts.reduce((s,p)=>s+p[0],0)/n,my=pts.reduce((s,p)=>s+p[1],0)/n;
+  let sxy=0,sxx=0,sst=0,sse=0;
+  pts.forEach(p=>{sxy+=(p[0]-mx)*(p[1]-my);sxx+=(p[0]-mx)**2;});
+  const bh=sxy/sxx,ah=my-bh*mx;
+  pts.forEach(p=>{sst+=(p[1]-my)**2;sse+=(p[1]-(ah+bh*p[0]))**2;});
+  const r2=1-sse/sst, st=performance.now();
+  cancelAnimationFrame(fitAnim);
+  const draw=now=>{
+    const t=reduced?1:Math.min(1,(now-st)/1500);
+    fx.clearRect(0,0,w,h);
+    /* axes */
+    fx.strokeStyle='rgba(255,255,255,.14)';fx.lineWidth=1;fx.beginPath();
+    fx.moveTo(pad,pad*.6);fx.lineTo(pad,h-pad);fx.lineTo(w-pad*.6,h-pad);fx.stroke();
+    fx.fillStyle='rgba(135,145,158,.6)';fx.font='10px IBM Plex Mono,monospace';
+    fx.fillText('y',pad-16,pad*.7);fx.fillText('x',w-pad*.4,h-pad+4);
+    /* points pop in */
+    const shown=Math.floor(Math.min(1,t/.55)*n);
+    for(let i=0;i<shown;i++){const p=pts[i];
+      fx.beginPath();fx.arc(X(p[0]),Y(p[1]),2.4,0,7);fx.fillStyle='rgba(232,237,242,.55)';fx.fill();}
+    /* fitted line sweeps after points */
+    if(t>.55){const lt=(t-.55)/.45;
+      /* residuals faint */
+      if(lt>.6){fx.strokeStyle='rgba(248,113,113,.22)';fx.lineWidth=1;fx.beginPath();
+        pts.forEach(p=>{fx.moveTo(X(p[0]),Y(p[1]));fx.lineTo(X(p[0]),Y(ah+bh*p[0]));});fx.stroke();}
+      fx.beginPath();fx.moveTo(X(0),Y(ah));fx.lineTo(X(lt),Y(ah+bh*lt));
+      fx.strokeStyle='#34d399';fx.lineWidth=2;fx.shadowColor='#34d399';fx.shadowBlur=10;fx.stroke();fx.shadowBlur=0;}
+    if(t<1)fitAnim=requestAnimationFrame(draw);
+    else $('#est').textContent=`β̂ = ${bh.toFixed(3)} , R² = ${r2.toFixed(3)}`;
+  };
+  $('#est').textContent='estimating…';
+  fitAnim=requestAnimationFrame(draw);
+};
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){runFit();o.disconnect();}},{threshold:.4}).observe(fc);
+$('#refit').addEventListener('click',()=>{fitSeed++;runFit();});
+addEventListener('resize',()=>{if(fc.getBoundingClientRect().top<innerHeight)runFit();});
+
+/* ---------- research card sparklines ---------- */
+const sio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;sio.unobserve(e.target);
+  const c=e.target,x=c.getContext('2d');
+  c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+  const w=c.clientWidth,h=c.clientHeight,r=mulberry(+c.dataset.seed);
+  let v=.5;const pts=[];for(let i=0;i<80;i++){v+=(r()-.5)*.16;v=Math.max(.1,Math.min(.9,v));pts.push(v);}
+  const st=performance.now();
+  const dr=now=>{const t=reduced?1:Math.min(1,(now-st)/900);
+    x.clearRect(0,0,w,h);x.beginPath();
+    const m=Math.floor(t*pts.length);
+    for(let i=0;i<m;i++){const px=i/(pts.length-1)*w,py=h*.88-pts[i]*h*.72;i?x.lineTo(px,py):x.moveTo(px,py);}
+    x.strokeStyle='#34d399';x.lineWidth=1.5;x.stroke();
+    if(m>0){x.lineTo(m/(pts.length-1)*w,h);x.lineTo(0,h);x.closePath();
+      const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'rgba(52,211,153,.25)');g.addColorStop(1,'rgba(52,211,153,0)');
+      x.fillStyle=g;x.fill();}
+    if(t<1)requestAnimationFrame(dr);};
+  requestAnimationFrame(dr);
+}),{threshold:.4});
+$$('.spark').forEach(c=>sio.observe(c));
+
+/* ---------- contact pulse ---------- */
+const pc=$('#pulseCanvas'),px=pc.getContext('2d');
+let pOn=false;
+new IntersectionObserver(es=>pOn=es[0].isIntersecting).observe(pc);
+const sizeP=()=>{pc.width=pc.clientWidth*dpr;pc.height=pc.clientHeight*dpr;px.setTransform(dpr,0,0,dpr,0,0);};
+sizeP();addEventListener('resize',sizeP);
+let pt=0;
+const drawP=()=>{
+  requestAnimationFrame(drawP);
+  if(!pOn||reduced)return;
+  pt+=.016;
+  const w=pc.clientWidth,h=pc.clientHeight;
+  px.clearRect(0,0,w,h);px.beginPath();
+  for(let i=0;i<=w;i+=2){
+    const ph=(i/w*6.28*2)-pt*2;
+    const beat=Math.exp(-Math.pow(((i/w*3+pt*.35)%1)-.5,2)*180);
+    const y=h*.55+Math.sin(ph)*4+beat*-h*.3;
+    i?px.lineTo(i,y):px.moveTo(i,y);}
+  px.strokeStyle='rgba(52,211,153,.55)';px.lineWidth=1.4;px.shadowColor='#34d399';px.shadowBlur=8;px.stroke();px.shadowBlur=0;
+};
+drawP();
+})();
+</script>
+</body>
+</html>
