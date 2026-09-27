@@ -54,12 +54,12 @@
     .nav-toggle { display: none; border: 0; background: none; color: var(--ink); padding: 9px; cursor: pointer; }
     .nav-toggle span { display: block; width: 22px; height: 2px; margin: 5px 0; background: currentColor; transition: transform .2s; }
 
-    /* Three beats share a pinned scene; only transforms and opacity change on scroll. */
+    /* One pinned scene carries the story from signal to words to evidence. */
     .hero { height: 225svh; position: relative; background: var(--night); color: #f8f8fa; scroll-margin-top: 0; }
     .hero-stage { position: sticky; top: 0; height: 100svh; min-height: 540px; overflow: hidden; display: flex; align-items: center; isolation: isolate; }
-    .hero-stage::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(16,21,33,.95) 1%, rgba(16,21,33,.60) 62%, rgba(16,21,33,.12)); }
-    .hero-art { position: absolute; width: min(81vw, 980px); aspect-ratio: 1; right: min(-16vw, -90px); top: 50%; translate: 0 -50%; border-radius: 50%; opacity: .88; transform: scale(calc(.92 + var(--hero-progress, 0) * .7)) rotate(calc(var(--hero-progress, 0) * 45deg)); background: radial-gradient(circle at 43% 48%, #b8c3ff 0 1%, #5b69c9 4%, #242d54 17%, transparent 48%), repeating-radial-gradient(circle at 43% 48%, transparent 0 54px, rgba(169,183,255,.23) 55px 56px, transparent 57px 78px), radial-gradient(circle, rgba(78,92,164,.26), transparent 65%); filter: saturate(1.1); will-change: transform; }
-    .hero-art::after { content: ""; position: absolute; inset: 13%; border-radius: 50%; border: 1px solid rgba(199,208,255,.21); box-shadow: 0 0 120px 30px rgba(89,106,216,.12), inset 0 0 100px rgba(159,171,255,.06); }
+    .hero-stage::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 75% 48%, rgba(81,99,183,.19), transparent 42%), linear-gradient(125deg, #101521 15%, #151e35 100%); }
+    .hero-stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(16,21,33,.92) 1%, rgba(16,21,33,.43) 56%, transparent 83%); pointer-events: none; }
+    .hero-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
     .hero-content { position: relative; z-index: 1; padding-top: 68px; }
     .hero-primary { max-width: 1010px; opacity: clamp(0, calc((.34 - var(--hero-progress, 0)) * 6), 1); transform: translateY(calc(var(--hero-progress, 0) * -130px)) scale(calc(1 - var(--hero-progress, 0) * .12)); transform-origin: left center; will-change: transform, opacity; }
     .hero-primary .eyebrow { color: var(--blue-light); margin-bottom: clamp(30px, 5vw, 62px); }
@@ -73,7 +73,7 @@
     .hero-middle p:last-child, .hero-secondary p:last-child { max-width: 590px; font-size: clamp(1rem, 1.7vw, 1.3rem); color: #c6cbd7; }
     .hero-note { position: absolute; bottom: 36px; left: 4.5vw; z-index: 2; display: flex; align-items: center; gap: 13px; color: #c6cbd7; font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; opacity: clamp(0, calc((.35 - var(--hero-progress, 0)) * 5), 1); }
     .hero-note::before { content: ""; display: block; width: 34px; height: 1px; background: var(--blue-light); }
-    .hero-index { position: absolute; bottom: 34px; right: 4.5vw; color: #98a4c2; font-size: .73rem; letter-spacing: .17em; }
+    .hero-index { position: absolute; z-index: 2; bottom: 34px; right: 4.5vw; color: #98a4c2; font-size: .73rem; letter-spacing: .17em; }
     .hero-progress-line { position: absolute; inset: auto 0 0; height: 2px; background: var(--blue-light); transform: scaleX(var(--hero-progress, 0)); transform-origin: left; z-index: 3; }
 
     /* About */
@@ -105,17 +105,18 @@
     .research-heading > p:last-child { max-width: 610px; margin: 36px 0 80px; color: #aab3c5; font-size: clamp(1.05rem, 1.55vw, 1.25rem); }
     .research-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .85fr); gap: clamp(60px, 9vw, 150px); }
     .research-visual { position: sticky; top: calc(50svh - 220px); height: 440px; border: 1px solid rgba(188,199,255,.15); border-radius: 10px; overflow: hidden; background: radial-gradient(circle at 50% 48%, #29345b, #161d30 38%, #111723 72%); }
-    .research-visual::before { content: ""; position: absolute; inset: -70px; background: repeating-radial-gradient(circle at center, transparent 0 43px, rgba(186,198,255,.1) 44px 45px, transparent 46px 74px); transition: transform .8s cubic-bezier(.2,.7,.2,1); }
-    .research-visual[data-current="1"]::before { transform: scale(1.17) rotate(18deg); }
-    .research-visual[data-current="2"]::before { transform: scale(1.36) rotate(36deg); }
-    .signal-core { position: absolute; left: 50%; top: 50%; width: 104px; aspect-ratio: 1; translate: -50% -50%; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 38% 30%, #cad2ff, #8b9bff 38%, #5363bf 80%); color: var(--night); box-shadow: 0 0 95px rgba(123,142,255,.52); font-size: .66rem; font-weight: 800; letter-spacing: .13em; transition: transform .7s, box-shadow .7s; }
+    .research-visual::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(194,204,255,.24) 1px, transparent 1.5px); background-size: 21px 21px; opacity: .38; mask-image: radial-gradient(ellipse, black 10%, transparent 73%); -webkit-mask-image: radial-gradient(ellipse, black 10%, transparent 73%); }
+    .research-visual::after { content: ""; position: absolute; width: 74%; aspect-ratio: 1; left: 13%; top: 50%; translate: 0 -50%; border: 1px solid rgba(194,204,255,.17); border-radius: 50%; box-shadow: 0 0 0 48px rgba(194,204,255,.035), 0 0 0 96px rgba(194,204,255,.025); transition: transform .8s cubic-bezier(.2,.7,.2,1), border-radius .8s; }
+    .research-visual[data-current="1"]::after { transform: scale(.8) rotate(45deg); border-radius: 24%; }
+    .research-visual[data-current="2"]::after { transform: scale(.72) rotate(60deg); border-radius: 5%; }
+    .signal-core { position: absolute; z-index: 1; left: 50%; top: 50%; width: 104px; aspect-ratio: 1; translate: -50% -50%; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 38% 30%, #cad2ff, #8b9bff 38%, #5363bf 80%); color: var(--night); box-shadow: 0 0 95px rgba(123,142,255,.52); font-size: .66rem; font-weight: 800; letter-spacing: .13em; transition: transform .7s, box-shadow .7s; }
     .research-visual[data-current="1"] .signal-core { transform: scale(1.13); }
     .research-visual[data-current="2"] .signal-core { transform: scale(1.24); box-shadow: 0 0 125px rgba(123,142,255,.7); }
-    .signal-tag { position: absolute; border: 1px solid rgba(194,204,255,.23); border-radius: 100px; padding: 8px 13px; background: rgba(13,19,32,.64); color: #d8ddf5; font-size: .66rem; font-weight: 700; letter-spacing: .15em; transition: color .4s, border-color .4s, transform .6s; }
-    .signal-tag:nth-of-type(2) { left: 12%; top: 24%; }
-    .signal-tag:nth-of-type(3) { right: 11%; top: 36%; }
-    .signal-tag:nth-of-type(4) { left: 19%; bottom: 20%; }
-    .research-visual[data-current="0"] .signal-tag:nth-of-type(2), .research-visual[data-current="1"] .signal-tag:nth-of-type(3), .research-visual[data-current="2"] .signal-tag:nth-of-type(4) { color: white; border-color: var(--blue-light); transform: scale(1.1); }
+    .signal-tag { position: absolute; z-index: 1; border: 1px solid rgba(194,204,255,.23); border-radius: 100px; padding: 8px 13px; background: rgba(13,19,32,.64); color: #d8ddf5; font-size: .66rem; font-weight: 700; letter-spacing: .15em; transition: color .4s, border-color .4s, transform .6s; }
+    .signal-tag:nth-of-type(1) { left: 12%; top: 24%; }
+    .signal-tag:nth-of-type(2) { right: 11%; top: 36%; }
+    .signal-tag:nth-of-type(3) { left: 19%; bottom: 20%; }
+    .research-visual[data-current="0"] .signal-tag:nth-of-type(1), .research-visual[data-current="1"] .signal-tag:nth-of-type(2), .research-visual[data-current="2"] .signal-tag:nth-of-type(3) { color: white; border-color: var(--blue-light); transform: scale(1.1); }
     .visual-foot { position: absolute; bottom: 20px; right: 22px; color: #8993ac; font-size: .65rem; font-weight: 700; letter-spacing: .15em; }
     .research-steps { padding-bottom: 18vh; }
     .research-step { min-height: 76svh; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid rgba(226,231,255,.15); opacity: .38; transition: opacity .7s ease; }
@@ -211,8 +212,7 @@
       .hero { height: 190svh; }
       .hero-stage { min-height: 500px; }
       .hero-content { padding-top: 62px; }
-      .hero-art { width: 128vw; right: -59vw; top: 38%; opacity: .56; }
-      .hero-stage::after { background: linear-gradient(90deg, rgba(16,21,33,.96), rgba(16,21,33,.46)); }
+      .hero-stage::after { background: linear-gradient(180deg, rgba(16,21,33,.13), rgba(16,21,33,.66) 43%, rgba(16,21,33,.94) 88%); }
       .hero h1 { font-size: clamp(4.3rem, 16vw, 6.5rem); }
       .hero-primary .eyebrow { margin-bottom: 32px; }
       .hero-middle, .hero-secondary { width: calc(100vw - 40px); }
@@ -246,9 +246,10 @@
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
       html.js .reveal { opacity: 1; transform: none; }
+      .hero { height: 100svh; }
       .hero-primary, .hero-note { opacity: 1; transform: none; }
       .hero-middle, .hero-secondary, .hero-progress-line { display: none; }
-      .hero-art { transform: none; }
+      .hero-art { opacity: .55; }
       html.js .research-step h3, html.js .research-step p:last-child { opacity: 1; transform: none; }
     }
   </style>
@@ -267,7 +268,7 @@
   <main>
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-stage">
-        <div class="hero-art" aria-hidden="true"></div>
+        <canvas class="hero-art" id="signal-canvas" aria-hidden="true"></canvas>
         <div class="container hero-content">
           <div class="hero-primary">
             <p class="eyebrow">Wenlan (Tony) Xie · Economics at UChicago</p>
@@ -419,6 +420,102 @@
       if (!reducedMotion.matches) document.documentElement.classList.add('js');
 
       const hero = document.querySelector('.hero');
+      const canvas = document.querySelector('#signal-canvas');
+      const ctx = canvas.getContext('2d');
+      const glyph = document.createElement('canvas');
+      glyph.width = 640;
+      glyph.height = 180;
+      const glyphCtx = glyph.getContext('2d');
+      glyphCtx.fillStyle = '#fff';
+      glyphCtx.font = '700 132px Arial, sans-serif';
+      glyphCtx.textAlign = 'center';
+      glyphCtx.fillText('WORDS', 320, 133);
+      const pixels = glyphCtx.getImageData(0, 0, 640, 180).data;
+      const letters = [];
+      for (let y = 0; y < 180; y += 4) {
+        for (let x = 0; x < 640; x += 4) {
+          if (pixels[(y * 640 + x) * 4 + 3] > 130) letters.push([x, y]);
+        }
+      }
+      const hash = n => { const v = Math.sin(n * 127.1) * 43758.5453; return v - Math.floor(v); };
+      const ease = (a, b, p) => { const t = Math.max(0, Math.min(1, (p - a) / (b - a))); return t * t * (3 - 2 * t); };
+      const mix = (a, b, t) => a + (b - a) * t;
+      let width = 0;
+      let height = 0;
+      let points = [];
+      function resizeSignal() {
+        if (!ctx) return;
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        const ratio = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        const count = Math.round(Math.min(900, Math.max(370, width * .65)));
+        points = Array.from({ length: count }, (_, i) => {
+          const z = 1 - 2 * (i + .5) / count;
+          const angle = i * 2.3999632297;
+          const ring = Math.sqrt(1 - z * z);
+          return {
+            x: Math.cos(angle) * ring, y: Math.sin(angle) * ring, z,
+            letter: letters[Math.floor(i * letters.length / count)],
+            u: hash(i + 11), v: hash(i + 701), size: .8 + hash(i + 2001) * 1.3
+          };
+        });
+      }
+      function drawSignal(progress) {
+        if (!ctx || !width || !height) return;
+        ctx.clearRect(0, 0, width, height);
+        const mobile = width < 680;
+        const words = ease(.08, .31, progress);
+        const data = ease(.52, .9, progress);
+        const centerX = width * (mobile ? .68 : .75);
+        const centerY = height * (mobile ? .31 : .49);
+        const radius = Math.min(height * (mobile ? .25 : .38), width * (mobile ? .55 : .31));
+        const wordWidth = width * (mobile ? .82 : .43);
+        const wordLeft = width * (mobile ? .09 : .55);
+        const wordTop = height * (mobile ? .18 : .37);
+        const chartLeft = width * (mobile ? .12 : .53);
+        const chartTop = height * (mobile ? .15 : .23);
+        const chartWidth = width * (mobile ? .78 : .39);
+        const chartHeight = height * (mobile ? .30 : .49);
+        if (data > .02) {
+          ctx.save();
+          ctx.globalAlpha = data * .26;
+          ctx.strokeStyle = '#b9c7ff';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(chartLeft, chartTop);
+          ctx.lineTo(chartLeft, chartTop + chartHeight);
+          ctx.lineTo(chartLeft + chartWidth, chartTop + chartHeight);
+          ctx.stroke();
+          ctx.setLineDash([3, 7]);
+          ctx.beginPath();
+          ctx.moveTo(chartLeft, chartTop + chartHeight * .81);
+          ctx.lineTo(chartLeft + chartWidth, chartTop + chartHeight * .18);
+          ctx.stroke();
+          ctx.restore();
+        }
+        const turn = progress * .65;
+        const cosine = Math.cos(turn);
+        const sine = Math.sin(turn);
+        for (const point of points) {
+          const sphereX = centerX + (point.x * cosine - point.z * sine) * radius;
+          const sphereY = centerY + point.y * radius;
+          const letterX = wordLeft + point.letter[0] / 640 * wordWidth;
+          const letterY = wordTop + point.letter[1] / 640 * wordWidth;
+          const dataX = chartLeft + point.u * chartWidth;
+          const dataY = chartTop + chartHeight * (.8 - point.u * .62 + (point.v - .5) * .39);
+          const x = mix(mix(sphereX, letterX, words), dataX, data);
+          const y = mix(mix(sphereY, letterY, words), dataY, data);
+          ctx.globalAlpha = mix(.28 + (point.z + 1) * .32, .92, words) * mix(1, .85, data);
+          ctx.fillStyle = point.v > .84 ? '#f4e3d6' : point.v > .45 ? '#d7dcff' : '#8da4ff';
+          ctx.beginPath();
+          ctx.arc(x, y, point.size * (1 + (1 - words) * Math.max(0, point.z) * .45), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
       const scrollProgress = () => Math.max(0, Math.min(1, scrollY / Math.max(1, hero.offsetHeight - innerHeight)));
       let target = scrollProgress();
       let current = target;
@@ -426,6 +523,7 @@
       let lastTime = 0;
       function renderHero() {
         hero.style.setProperty('--hero-progress', current.toFixed(4));
+        drawSignal(reducedMotion.matches ? 0 : current);
       }
       function animateHero(time) {
         const elapsed = lastTime ? Math.min(time - lastTime, 64) : 16;
@@ -441,7 +539,8 @@
         if (!frame) { lastTime = 0; frame = requestAnimationFrame(animateHero); }
       }
       addEventListener('scroll', updateHero, { passive: true });
-      addEventListener('resize', () => { target = current = scrollProgress(); renderHero(); });
+      addEventListener('resize', () => { resizeSignal(); target = current = scrollProgress(); renderHero(); });
+      resizeSignal();
       renderHero();
 
       if ('IntersectionObserver' in window) {
