@@ -1,791 +1,2112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wenlan (Tony) Xie — Economics · UChicago</title>
-<meta name="description" content="Wenlan (Tony) Xie — Economics student at the University of Chicago. Text as data × LLMs × Financial Economics.">
-<meta property="og:title" content="Wenlan (Tony) Xie — Economics · UChicago">
-<meta property="og:description" content="Text as data × LLMs × Financial Economics.">
-<meta property="og:url" content="https://wenlanxie.com/">
-<meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2306080d'/><polyline points='10,70 30,45 45,58 65,30 90,42' fill='none' stroke='%2334d399' stroke-width='8'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#06080d; --bg2:#0a0f16; --panel:#0d141d;
-  --ink:#e8edf2; --dim:#87919e; --faint:#3d4653;
-  --up:#34d399; --dn:#f87171; --amber:#fbbf24;
-  --line:rgba(255,255,255,.08);
-  --paper:#f2efe7; --paper2:#e9e5d9; --paperink:#12151a; --paperdim:#5a5f66;
-  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Consolas,'Courier New',monospace;
-  --disp:'Space Grotesk',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--disp);overflow-x:hidden;line-height:1.6}
-::selection{background:var(--up);color:#04140c}
-::-webkit-scrollbar{width:10px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:#232c38;border-radius:5px}
-::-webkit-scrollbar-thumb:hover{background:#34d399}
-a{color:inherit}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a0b">
+  <meta name="description"
+    content="Wenlan (Tony) Xie studies text as data, large language models, and financial economics at the University of Chicago.">
+  <meta property="og:title" content="Wenlan (Tony) Xie — Economics Research">
+  <meta property="og:description"
+    content="Finding signal in the noise. Research at the intersection of language and markets.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wenlanxie.com/">
+  <title>Wenlan (Tony) Xie — Economics Research</title>
+  <link rel="icon" type="image/svg+xml" href="images/wenlan-mark.svg">
+  <style>
+    :root {
+      --paper: #111214;
+      --ink: #f2f1ed;
+      --muted: #a2a4a8;
+      --line: rgba(242, 241, 237, .16);
+      --night: #090a0b;
+      --blue-light: #deded9;
+      --signal: #ff5b30;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
 
-/* ---------- loader ---------- */
-#loader{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;transition:transform .7s cubic-bezier(.77,0,.18,1),opacity .5s}
-#loader.done{transform:translateY(-100%);opacity:.4;pointer-events:none}
-#bootlog{font-family:var(--mono);font-size:13px;color:var(--dim);width:min(460px,86vw)}
-#bootlog div{opacity:0;animation:bootline .25s forwards}
-#bootlog .ok{color:var(--up)}
-#bootlog div:nth-child(1){animation-delay:.1s}
-#bootlog div:nth-child(2){animation-delay:.4s}
-#bootlog div:nth-child(3){animation-delay:.7s}
-#bootlog div:nth-child(4){animation-delay:1s}
-@keyframes bootline{to{opacity:1}}
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-/* ---------- fixed chrome ---------- */
-header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:20px 32px;mix-blend-mode:difference}
-.logo{font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:.08em;text-decoration:none}
-.logo b{background:var(--amber);color:#111;padding:1px 5px;font-weight:600}
-nav{display:flex;gap:26px}
-nav a{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-decoration:none;color:var(--ink);opacity:.75;transition:opacity .2s;position:relative}
-nav a:hover{opacity:1}
-nav a::after{content:"";position:absolute;left:0;bottom:-4px;height:1px;width:0;background:var(--up);transition:width .25s}
-nav a:hover::after{width:100%}
-nav a.cur{opacity:1;color:var(--up)}
-nav a.cur::after{width:100%}
-@media(max-width:820px){nav{display:none}}
+    html {
+      scroll-behavior: smooth;
+    }
 
-/* right rail: index counter + dots */
-#rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:22px}
-#wxi{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);writing-mode:vertical-rl;transition:color .3s}
-#wxi b{color:var(--up);font-weight:500}
-#dots{display:flex;flex-direction:column;gap:12px}
-#dots a{width:7px;height:7px;border-radius:50%;background:var(--faint);display:block;transition:all .3s;border:1px solid transparent}
-#dots a.on{background:var(--up);box-shadow:0 0 8px rgba(52,211,153,.7);transform:scale(1.25)}
-#rail.onlight #wxi{color:#6a6f76}
-#rail.onlight #dots a{background:#c8c2b2}
-#rail.onlight #dots a.on{background:#12151a;box-shadow:none}
-@media(max-width:820px){#rail{display:none}}
+    body {
+      margin: 0;
+      background: var(--night);
+      color: var(--ink);
+      font: 16px/1.55 var(--font);
+      overflow-x: hidden;
+    }
 
-/* ---------- shared section bits ---------- */
-section{position:relative;padding:120px 0}
-.wrap{width:min(1180px,90vw);margin:0 auto;position:relative;z-index:2}
-.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--up);display:flex;align-items:center;gap:14px;margin-bottom:28px}
-.kicker::after{content:"";height:1px;flex:0 0 60px;background:var(--up);opacity:.5}
-.h-huge{font-weight:700;line-height:.92;letter-spacing:-.02em;font-size:clamp(3.2rem,9vw,7.5rem);text-transform:uppercase}
-.rv{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
-.rv.on{opacity:1;transform:none}
-.rv2{transition-delay:.12s}.rv3{transition-delay:.24s}.rv4{transition-delay:.36s}
+    body.menu-open {
+      overflow: hidden;
+    }
 
-/* ---------- hero ---------- */
-#hero{min-height:100vh;display:flex;align-items:flex-end;padding:0 0 11vh;overflow:hidden}
-#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-#hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 30% 75%,transparent 30%,rgba(6,8,13,.72) 100%);z-index:1;pointer-events:none}
-.hero-kick{font-family:var(--mono);font-size:12.5px;letter-spacing:.28em;color:var(--dim);margin-bottom:22px}
-.hero-kick span{color:var(--up)}
-#hero h1{font-weight:700;line-height:.9;letter-spacing:-.03em;font-size:clamp(4rem,13vw,10.5rem);text-transform:uppercase}
-#hero h1 .thin{color:transparent;-webkit-text-stroke:1.5px rgba(232,237,242,.85)}
-.hero-sub{font-family:var(--mono);font-size:clamp(11px,1.4vw,14px);letter-spacing:.16em;color:var(--ink);margin-top:30px}
-.hero-sub .x{color:var(--up);padding:0 .35em}
-.cursor{display:inline-block;width:.55em;height:1.05em;background:var(--up);vertical-align:text-bottom;margin-left:6px;animation:blink 1.05s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.scrollhint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--dim);z-index:2;animation:bob 2.2s ease-in-out infinite}
-@keyframes bob{50%{transform:translate(-50%,7px)}}
+    ::selection {
+      background: var(--blue-light);
+      color: var(--night);
+    }
 
-/* ticker */
-#ticker{position:absolute;left:0;right:0;bottom:0;z-index:3;border-top:1px solid var(--line);background:rgba(6,8,13,.66);backdrop-filter:blur(6px);overflow:hidden;white-space:nowrap}
-#ticker .belt{display:inline-block;padding:9px 0;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--dim);animation:belt 75s linear infinite}
-#ticker:hover .belt{animation-play-state:paused}
-#ticker .belt span{margin:0 26px}
-#ticker .u{color:var(--up)}#ticker .d{color:var(--dn)}
-@keyframes belt{to{transform:translateX(-50%)}}
+    a {
+      color: inherit;
+    }
 
-/* ---------- about ---------- */
-#about{background:linear-gradient(var(--bg) 0%,var(--bg2) 100%)}
-.about-grid{display:grid;grid-template-columns:340px 1fr;gap:64px;align-items:start}
-@media(max-width:900px){.about-grid{grid-template-columns:1fr}}
-.photo{position:relative;border:1px solid var(--line);padding:14px;background:var(--panel)}
-.photo::before,.photo::after{content:"";position:absolute;width:18px;height:18px;border:1.5px solid var(--up)}
-.photo::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
-.photo::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
-.photo img{width:100%;display:block;filter:grayscale(1) contrast(1.06);transition:filter .5s}
-.photo:hover img{filter:none}
-.photo figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);padding-top:12px}
-.photo.noimg img{display:none}
-.photo.noimg .mono-fallback{display:flex}
-.mono-fallback{display:none;aspect-ratio:3/4;align-items:center;justify-content:center;font-family:var(--mono);font-size:64px;color:var(--faint);background:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(255,255,255,.02) 12px,rgba(255,255,255,.02) 24px)}
-.bio p{color:#c3ccd6;font-size:17px;max-width:56ch;margin-bottom:18px}
-.bio b{color:var(--ink)}
-.edu{margin-top:34px;border-top:1px solid var(--line)}
-.edu li{list-style:none;display:grid;grid-template-columns:120px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px}
-.edu .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--up);padding-top:3px}
-.edu .deg{color:#c3ccd6}
-.edu .deg em{color:var(--dim);font-style:normal;font-size:13px;display:block}
-/* regression toy */
-#fitbox{margin-top:44px;border:1px solid var(--line);background:var(--panel);position:relative}
-#fitCanvas{width:100%;height:280px;display:block}
-.fitbar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding:10px 16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--dim);flex-wrap:wrap;gap:8px}
-.fitbar .est{color:var(--up)}
-#refit{font-family:var(--mono);font-size:11px;letter-spacing:.14em;background:none;border:1px solid var(--up);color:var(--up);padding:6px 14px;cursor:pointer;transition:all .25s}
-#refit:hover{background:var(--up);color:#04140c}
-.fitlabel{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--dim)}
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:64px}
-@media(max-width:700px){.stats{grid-template-columns:1fr}}
-.stat{background:var(--bg2);padding:26px 24px}
-.stat .n{font-family:var(--mono);font-size:44px;font-weight:600;color:var(--ink);line-height:1}
-.stat .n i{color:var(--up);font-style:normal}
-.stat .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);margin-top:10px}
+    button {
+      font: inherit;
+    }
 
-/* ---------- research ---------- */
-#research{background:var(--bg)}
-.lede{color:#c3ccd6;font-size:clamp(17px,2vw,21px);max-width:62ch;margin-bottom:64px}
-.lede b{color:var(--up);font-weight:500}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:900px){.cards{grid-template-columns:1fr}}
-.card{border:1px solid var(--line);background:var(--panel);padding:0 0 22px;transition:transform .3s,border-color .3s;position:relative;overflow:hidden}
-.card:hover{transform:translateY(-6px);border-color:rgba(52,211,153,.45)}
-.card canvas{width:100%;height:64px;display:block;opacity:.9}
-.card h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;color:var(--up);padding:18px 22px 10px}
-.card ul{padding:0 22px;list-style:none}
-.card li{font-size:14px;color:#b9c2cc;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.07)}
-.card li:last-child{border:0}
-.card li::before{content:"▸ ";color:var(--faint)}
-.xp{margin-top:80px;border-top:1px solid var(--line)}
-.xp-row{display:grid;grid-template-columns:190px 1fr;gap:26px;padding:34px 0;border-bottom:1px solid var(--line)}
-@media(max-width:820px){.xp-row{grid-template-columns:1fr;gap:10px}}
-.xp-meta{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--dim);line-height:2}
-.xp-meta .org{color:var(--amber)}
-.xp-body h4{font-size:20px;font-weight:500;letter-spacing:-.01em;margin-bottom:10px}
-.xp-body p{color:#a9b3bf;font-size:15px;max-width:72ch}
+    section[id],
+    div[id] {
+      scroll-margin-top: 68px;
+    }
 
-/* ---------- publications (light flip) ---------- */
-#pubs{background:var(--paper);color:var(--paperink)}
-#pubs .kicker{color:#0f7a54}
-#pubs .kicker::after{background:#0f7a54}
-#pubs ::selection{background:#12151a;color:var(--paper)}
-.pub-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:70px}
-.pub-count{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;color:var(--paperdim);text-align:right;line-height:2}
-.pub-count b{color:var(--paperink);font-size:15px}
-.publist{list-style:none;counter-reset:pub}
-.publist>li{display:grid;grid-template-columns:110px 1fr;gap:28px;padding:30px 0;border-top:1px solid #d5cfbe;transition:background .25s}
-.publist>li:hover{background:var(--paper2)}
-.publist>li:last-child{border-bottom:1px solid #d5cfbe}
-@media(max-width:700px){.publist>li{grid-template-columns:1fr;gap:8px}}
-.pub-yr{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--paperdim);padding-top:5px}
-.pub-yr::before{counter-increment:pub;content:"№" counter(pub,decimal-leading-zero);display:block;color:#b3ac97;margin-bottom:4px}
-.pub-t{font-size:19px;font-weight:500;line-height:1.35;letter-spacing:-.01em}
-.pub-a{font-size:14px;color:var(--paperdim);margin-top:8px}
-.pub-a mark{background:var(--amber);color:#111;padding:0 4px;font-weight:500}
-.pub-a .role{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;background:#12151a;color:var(--paper);padding:1px 7px;border-radius:2px;margin-left:2px}
-.pub-j{font-size:14px;font-style:italic;color:#0f7a54;margin-top:5px}
-.subcols{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:90px}
-@media(max-width:820px){.subcols{grid-template-columns:1fr}}
-.subcols h3{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--paperdim);border-bottom:2px solid var(--paperink);padding-bottom:12px;margin-bottom:20px}
-.conf{list-style:none}
-.conf li{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:10px 0;border-bottom:1px solid #d5cfbe;font-size:14.5px}
-.conf .y{font-family:var(--mono);font-size:12px;color:#0f7a54;padding-top:2px}
-.svc{font-size:14.5px;color:#3c4149;line-height:2.05}
-.svc em{font-style:normal;border-bottom:1px solid #b3ac97}
+    .container {
+      width: min(1320px, calc(100% - 9vw));
+      margin-inline: auto;
+    }
 
-/* ---------- news / log ---------- */
-#log{background:var(--bg2)}
-.loglist{list-style:none;border-top:1px solid var(--line);margin-top:10px}
-.loglist li{display:grid;grid-template-columns:130px 84px 1fr;gap:22px;align-items:baseline;padding:22px 0;border-bottom:1px solid var(--line);font-size:15.5px;color:#c3ccd6}
-@media(max-width:700px){.loglist li{grid-template-columns:1fr;gap:6px}}
-.loglist .ts{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--dim)}
-.loglist .ev{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--up)}
-.loglist .ev.d{color:var(--amber)}
-.loglist i{color:var(--dim)}
+    .eyebrow {
+      margin: 0;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
 
-/* ---------- contact ---------- */
-#contact{min-height:88vh;display:flex;align-items:center;background:var(--bg);overflow:hidden}
-#pulseCanvas{position:absolute;inset:auto 0 0 0;width:100%;height:180px;opacity:.5;z-index:0}
-.mail{display:inline-block;font-weight:700;font-size:clamp(1.6rem,4.6vw,3.6rem);letter-spacing:-.02em;text-decoration:none;margin:26px 0 40px;position:relative}
-.mail::after{content:"";position:absolute;left:0;bottom:-6px;height:3px;width:100%;background:var(--up);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1)}
-.mail:hover::after{transform:scaleX(1)}
-.chips{display:flex;gap:14px;flex-wrap:wrap}
-.chip{font-family:var(--mono);font-size:12px;letter-spacing:.14em;border:1px solid var(--line);padding:10px 20px;text-decoration:none;color:var(--ink);transition:all .25s;display:inline-flex;gap:8px;align-items:center}
-.chip:hover{border-color:var(--up);color:var(--up);transform:translateY(-2px)}
-.coords{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;color:var(--dim);margin-top:60px}
-footer{border-top:1px solid var(--line);padding:26px 32px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);background:var(--bg)}
-footer .u{color:var(--up)}
+    .section-label {
+      color: var(--muted);
+    }
 
-/* ---------- parallax: depth layers ---------- */
-#about,#research,#pubs,#log,#contact,.band,footer{position:relative;z-index:1}
-#about,#research,#pubs,#log{overflow:hidden;overflow:clip}
-#about{box-shadow:0 -40px 90px rgba(0,0,0,.6);border-top:1px solid rgba(52,211,153,.2)}
-.plx-grid{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:90px 90px}
-/* with parallax on, the grid is only one viewport tall: JS keeps it under the viewport and wraps it every 90px (one cell) */
-html.plx .plx-grid{bottom:auto;height:calc(100vh + 200px);will-change:translate}
-#pubs .plx-grid{background-image:linear-gradient(rgba(18,21,26,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(18,21,26,.055) 1px,transparent 1px)}
-.ghost{position:absolute;right:3vw;top:50px;z-index:1;pointer-events:none;user-select:none;will-change:translate;
-  font-weight:700;line-height:.8;letter-spacing:-.04em;font-size:clamp(12rem,30vw,27rem);
-  color:transparent;-webkit-text-stroke:1.5px rgba(232,237,242,.075)}
-#pubs .ghost{-webkit-text-stroke-color:rgba(18,21,26,.1)}
-.deco{position:absolute;z-index:1;pointer-events:none;user-select:none;font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--faint);white-space:nowrap;line-height:1}
-.deco.x{font-size:22px;letter-spacing:0;font-weight:400}
-.deco.g{color:rgba(52,211,153,.55)}
-.deco.a{color:rgba(251,191,36,.5)}
-#pubs .deco{color:#b3ac97}
-#pubs .deco.g{color:rgba(15,122,84,.55)}
-@media(max-width:1100px){.deco{display:none}}
-.ln{display:inline-block}
-.photo .ph{display:block;overflow:hidden}
-html.plx .photo .ph img{transform:scale(1.14)}
+    .display {
+      margin: 0;
+      font-size: clamp(3.2rem, 8vw, 8rem);
+      line-height: .99;
+      letter-spacing: -.075em;
+      font-weight: 600;
+    }
 
-/* hero: pinned while the next section slides over it */
-.hl{display:inline-block;will-change:transform}
-.hero-shade{position:absolute;inset:0;background:var(--bg);opacity:0;z-index:4;pointer-events:none}
-html.plx #heroCanvas{transform-origin:100% 62%;will-change:transform}
-@media(min-height:520px){
-  html.plx #hero{position:sticky;top:0;z-index:0;height:100vh;height:100svh;min-height:0}
-}
+    .serif {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: -.075em;
+    }
 
-/* scroll-linked text band */
-.band{background:var(--bg);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:38px 0 34px;overflow:hidden;overflow:clip;white-space:nowrap}
-.band .row{display:block;width:max-content;margin-left:-60vw;will-change:translate}
-.band .r1{font-weight:700;text-transform:uppercase;letter-spacing:-.02em;line-height:1;font-size:clamp(2.6rem,7.5vw,6rem);color:transparent;-webkit-text-stroke:1px rgba(232,237,242,.3)}
-.band .r1 i{font-style:normal;font-weight:400;color:var(--up);-webkit-text-stroke:0;padding:0 .32em}
-.band .r2{font-family:var(--mono);font-size:12px;letter-spacing:.3em;color:var(--dim);margin-top:20px}
-.band .r2 b{color:var(--up);font-weight:400;padding:0 1.3em}
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .7em;
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: .2em;
+    }
 
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .rv{opacity:1;transform:none}
-}
-</style>
+    .text-link span {
+      transition: transform .25s ease;
+    }
+
+    .text-link:hover span {
+      transform: translateX(5px);
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 5px;
+    }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      height: 68px;
+      z-index: 20;
+      background: var(--night);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: block;
+      width: 46px;
+      height: 46px;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 3vw, 40px);
+    }
+
+    .site-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 600;
+      transition: color .2s;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus-visible {
+      color: var(--ink);
+    }
+
+    .nav-toggle {
+      display: none;
+      border: 0;
+      background: none;
+      color: var(--ink);
+      padding: 9px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      margin: 5px 0;
+      background: currentColor;
+      transition: transform .2s;
+    }
+
+    /* Hero v2: one pinned scene in four acts (noise, words, scores, evidence).
+       Particles are drawn with WebGL (2D canvas fallback); axes, bins and labels sit on a 2D overlay. */
+    .hero {
+      height: 400svh;
+      position: relative;
+      background: var(--night);
+      color: var(--ink);
+      scroll-margin-top: 0;
+    }
+
+    .hero-stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      min-height: 540px;
+      overflow: hidden;
+      isolation: isolate;
+      background: radial-gradient(circle at 74% 50%, rgba(196, 195, 185, .065), transparent 46%), var(--night);
+    }
+
+    .hero-gl,
+    .hero-ui {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .hero-gl {
+      z-index: 0;
+    }
+
+    .hero-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(9, 10, 11, .9) 0%, rgba(9, 10, 11, .5) 34%, rgba(9, 10, 11, 0) 54%);
+    }
+
+    .hero-ui {
+      z-index: 2;
+    }
+
+    .hero-copy {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .hero-copy .container {
+      position: relative;
+      height: 100%;
+    }
+
+    .act {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      translate: 0 -50%;
+      width: min(600px, 43vw);
+      opacity: 0;
+      visibility: hidden;
+      will-change: transform, opacity;
+    }
+
+    .act-0 {
+      width: min(980px, 70vw);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .act .eyebrow {
+      margin-bottom: 26px;
+      color: var(--muted);
+    }
+
+    .act-0 .eyebrow {
+      color: var(--ink);
+    }
+
+    .act-0 h1 {
+      font-size: clamp(4rem, 9.4vw, 9.6rem);
+      line-height: .92;
+      max-width: 9ch;
+    }
+
+    .act:not(.act-0) .display {
+      font-size: clamp(2.5rem, 4.8vw, 5.2rem);
+      line-height: 1.02;
+    }
+
+    .act .lead {
+      max-width: 460px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.35vw, 1.2rem);
+    }
+
+    .hero .serif {
+      color: var(--blue-light);
+    }
+
+    .hero .serif.sig {
+      color: var(--signal);
+    }
+
+    .cite {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 30px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .8rem;
+      text-decoration: none;
+      pointer-events: auto;
+    }
+
+    .cite b {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .cite:hover b {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .hero-foot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 30px;
+      z-index: 4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      pointer-events: none;
+    }
+
+    .hero-steps {
+      display: flex;
+      gap: 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .hero-steps li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(162, 164, 168, .5);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      transition: color .4s;
+    }
+
+    .hero-steps li::before {
+      content: "";
+      width: 16px;
+      height: 1px;
+      background: currentColor;
+      transition: width .4s;
+    }
+
+    .hero-steps li.on {
+      color: var(--ink);
+    }
+
+    .hero-steps li.on::before {
+      width: 34px;
+    }
+
+    .hero-hint {
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .hero-tip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 6;
+      width: 272px;
+      padding: 14px 16px 13px;
+      background: rgba(17, 18, 20, .94);
+      border: 1px solid rgba(242, 241, 237, .2);
+      border-radius: 4px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .45);
+      opacity: 0;
+      transition: opacity .18s;
+      pointer-events: none;
+    }
+
+    .hero-tip.on {
+      opacity: 1;
+    }
+
+    .tip-film {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .tip-text {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.02rem;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .tip-row {
+      display: grid;
+      grid-template-columns: max-content 1fr 46px;
+      white-space: nowrap;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .tip-row+.tip-row {
+      margin-top: 7px;
+    }
+
+    .tip-row em {
+      color: var(--ink);
+      font-style: normal;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .tip-bar {
+      position: relative;
+      height: 3px;
+      background: rgba(242, 241, 237, .13);
+      border-radius: 2px;
+    }
+
+    .tip-bar::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -3px;
+      bottom: -3px;
+      width: 1px;
+      background: rgba(242, 241, 237, .4);
+    }
+
+    .tip-bar b {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: var(--ink);
+      border-radius: 2px;
+    }
+
+    .tip-tag {
+      margin: 12px 0 0;
+      color: rgba(162, 164, 168, .6);
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .hero-progress-line {
+      position: absolute;
+      inset: auto 0 0;
+      z-index: 4;
+      height: 2px;
+      background: var(--blue-light);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    @media (max-width: 680px) {
+      .hero {
+        height: 340svh;
+      }
+
+      .hero-stage {
+        min-height: 520px;
+      }
+
+      .hero-veil {
+        background: linear-gradient(180deg, rgba(9, 10, 11, 0) 0%, rgba(9, 10, 11, 0) 46%, rgba(9, 10, 11, .84) 57%, rgba(9, 10, 11, .95) 100%);
+      }
+
+      .act {
+        top: 52%;
+        translate: 0 0;
+        width: 100%;
+      }
+
+      .act-0 {
+        top: 43%;
+      }
+
+      .act-0 h1 {
+        font-size: clamp(3.3rem, 15vw, 5.2rem);
+      }
+
+      .act:not(.act-0) .display {
+        font-size: clamp(2rem, 9.4vw, 2.9rem);
+      }
+
+      .act .eyebrow {
+        margin-bottom: 16px;
+      }
+
+      .act .lead {
+        margin-top: 16px;
+        font-size: 1rem;
+      }
+
+      .cite {
+        margin-top: 20px;
+      }
+
+      .hero-foot {
+        bottom: 22px;
+      }
+
+      .hero-steps {
+        gap: 14px;
+      }
+
+      .hero-steps li::before,
+      .hero-hint {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero {
+        height: 100svh;
+      }
+
+      .hero-steps,
+      .hero-progress-line {
+        display: none;
+      }
+    }
+
+    .about {
+      padding: clamp(88px, 8vw, 132px) 0;
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+    }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr);
+      align-items: center;
+      gap: clamp(48px, 6vw, 100px);
+    }
+
+    .about-layout h2 {
+      margin-top: 24px;
+      font-size: clamp(3.6rem, 5.8vw, 6.4rem);
+      white-space: nowrap;
+    }
+
+    .about-layout h2 .serif {
+      color: var(--blue-light);
+    }
+
+    .about-copy {
+      max-width: 520px;
+    }
+
+    .about-lede {
+      margin: 0 0 20px;
+      font-size: clamp(1.4rem, 1.9vw, 2rem);
+      letter-spacing: -.04em;
+      line-height: 1.25;
+    }
+
+    .about-copy>p:not(.about-lede) {
+      max-width: 44ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.3vw, 1.15rem);
+    }
+
+    .education {
+      list-style: none;
+      padding: 0;
+      margin: 36px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .education li {
+      display: grid;
+      grid-template-columns: 68px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: .88rem;
+    }
+
+    .education small {
+      color: var(--muted);
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding-top: 3px;
+    }
+
+    /* Research is a natural scroll with a pinned visual on wide screens. */
+    .research {
+      background: var(--night);
+      color: var(--ink);
+      padding: clamp(110px, 12vw, 170px) 0 70px;
+      overflow: clip;
+      border-top: 1px solid var(--line);
+    }
+
+    .research-heading {
+      max-width: 1000px;
+    }
+
+    .research-heading .eyebrow {
+      color: var(--blue-light);
+    }
+
+    .research-heading h2 {
+      margin-top: 30px;
+    }
+
+    .research-heading h2 .serif {
+      color: var(--blue-light);
+    }
+
+    .research-heading>p:last-child {
+      max-width: 610px;
+      margin: 30px 0 70px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.55vw, 1.25rem);
+    }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
+      gap: clamp(60px, 9vw, 150px);
+    }
+
+    .research-visual {
+      position: sticky;
+      top: calc(50svh - 220px);
+      height: 440px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 48%, #242527, #151618 43%, #101113 75%);
+    }
+
+    .research-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(235, 235, 230, .26) 1px, transparent 1.5px);
+      background-size: 21px 21px;
+      opacity: .38;
+      mask-image: radial-gradient(ellipse, black 10%, transparent 73%);
+      -webkit-mask-image: radial-gradient(ellipse, black 10%, transparent 73%);
+    }
+
+    .research-visual::after {
+      content: "";
+      position: absolute;
+      width: 74%;
+      aspect-ratio: 1;
+      left: 13%;
+      top: 50%;
+      translate: 0 -50%;
+      border: 1px solid rgba(235, 235, 230, .19);
+      border-radius: 50%;
+      box-shadow: 0 0 0 48px rgba(235, 235, 230, .025), 0 0 0 96px rgba(235, 235, 230, .016);
+      transition: transform .8s cubic-bezier(.2, .7, .2, 1), border-radius .8s;
+    }
+
+    .research-visual[data-current="1"]::after {
+      transform: scale(.8) rotate(45deg);
+      border-radius: 24%;
+    }
+
+    .research-visual[data-current="2"]::after {
+      transform: scale(.72) rotate(60deg);
+      border-radius: 5%;
+    }
+
+    .signal-core {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: 50%;
+      width: 104px;
+      aspect-ratio: 1;
+      translate: -50% -50%;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 30%, #f1f1ec, #b7b8b4 42%, #6e7173 90%);
+      color: var(--night);
+      box-shadow: 0 0 95px rgba(225, 225, 220, .2);
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      transition: transform .7s, box-shadow .7s;
+    }
+
+    .research-visual[data-current="1"] .signal-core {
+      transform: scale(1.13);
+    }
+
+    .research-visual[data-current="2"] .signal-core {
+      transform: scale(1.24);
+      box-shadow: 0 0 125px rgba(225, 225, 220, .3);
+    }
+
+    .signal-tag {
+      position: absolute;
+      z-index: 1;
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      padding: 8px 13px;
+      background: rgba(9, 10, 11, .7);
+      color: var(--muted);
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      transition: color .4s, border-color .4s, transform .6s;
+    }
+
+    .signal-tag:nth-of-type(1) {
+      left: 12%;
+      top: 24%;
+    }
+
+    .signal-tag:nth-of-type(2) {
+      right: 11%;
+      top: 36%;
+    }
+
+    .signal-tag:nth-of-type(3) {
+      left: 19%;
+      bottom: 20%;
+    }
+
+    .research-visual[data-current="0"] .signal-tag:nth-of-type(1),
+    .research-visual[data-current="1"] .signal-tag:nth-of-type(2),
+    .research-visual[data-current="2"] .signal-tag:nth-of-type(3) {
+      color: white;
+      border-color: var(--blue-light);
+      transform: scale(1.1);
+    }
+
+    .visual-foot {
+      position: absolute;
+      bottom: 20px;
+      right: 22px;
+      color: var(--muted);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+    }
+
+    .research-steps {
+      padding-bottom: 10vh;
+    }
+
+    .research-step {
+      min-height: 62svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top: 1px solid var(--line);
+      opacity: .38;
+      transition: opacity .7s ease;
+    }
+
+    .research-step.is-active {
+      opacity: 1;
+    }
+
+    .research-step .eyebrow {
+      color: var(--blue-light);
+    }
+
+    .research-step h3 {
+      margin: 22px 0 19px;
+      font-size: clamp(2.5rem, 4.2vw, 4.9rem);
+      letter-spacing: -.065em;
+      line-height: 1.04;
+      font-weight: 600;
+    }
+
+    .research-step p:last-child {
+      max-width: 52ch;
+      margin: 0;
+      font-size: clamp(1rem, 1.3vw, 1.16rem);
+      color: var(--muted);
+    }
+
+    html.js .research-step h3,
+    html.js .research-step p:last-child {
+      transform: translateY(26px);
+      opacity: 0;
+      transition: transform .8s cubic-bezier(.2, .7, .2, 1), opacity .8s ease;
+    }
+
+    html.js .research-step.is-active h3,
+    html.js .research-step.is-active p:last-child {
+      transform: none;
+      opacity: 1;
+    }
+
+    html.js .research-step.is-active p:last-child {
+      transition-delay: .14s;
+    }
+
+    .publications {
+      padding: clamp(110px, 13vw, 190px) 0;
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+    }
+
+    .pub-intro {
+      margin-bottom: clamp(55px, 8vw, 90px);
+    }
+
+    .pub-intro h2 {
+      margin-top: 26px;
+    }
+
+    .pub-intro h2 .serif {
+      color: var(--blue-light);
+    }
+
+    .paper-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: paper;
+      border-top: 1px solid var(--line);
+    }
+
+    .paper-list li {
+      counter-increment: paper;
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr) 110px;
+      gap: 20px;
+      align-items: start;
+      padding: 32px 0 36px;
+      border-bottom: 1px solid var(--line);
+      transition: padding .3s, background .3s;
+    }
+
+    .paper-list li:hover {
+      padding-inline: 16px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .paper-list li::before {
+      content: counter(paper, decimal-leading-zero);
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 750;
+      letter-spacing: .1em;
+      padding-top: 7px;
+    }
+
+    .paper-list h3 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(1.25rem, 2vw, 1.85rem);
+      line-height: 1.3;
+      letter-spacing: -.035em;
+      font-weight: 600;
+    }
+
+    .paper-journal {
+      margin: 13px 0 0;
+      font-size: .9rem;
+      color: var(--muted);
+    }
+
+    .paper-year {
+      padding-top: 6px;
+      text-align: right;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+    }
+
+    .all-work {
+      margin-top: 45px;
+      font-size: .9rem;
+    }
+
+    .contact {
+      min-height: 70svh;
+      display: flex;
+      align-items: center;
+      padding: 110px 0;
+      background: radial-gradient(circle at 92% 6%, #1c1d1f 0, transparent 38%), var(--night);
+      color: var(--ink);
+      border-top: 1px solid var(--line);
+    }
+
+    .contact .eyebrow {
+      color: var(--blue-light);
+    }
+
+    .contact h2 {
+      max-width: 1050px;
+      margin: 28px 0 50px;
+    }
+
+    .contact h2 .serif {
+      color: var(--blue-light);
+    }
+
+    .contact-email {
+      display: inline-block;
+      max-width: 100%;
+      font-size: clamp(1.45rem, 3.7vw, 3.8rem);
+      line-height: 1.15;
+      font-weight: 550;
+      letter-spacing: -.055em;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-top: 50px;
+    }
+
+    .contact-links a {
+      color: var(--muted);
+      font-size: .88rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--muted);
+      padding-bottom: 5px;
+    }
+
+    .contact-links a:hover {
+      color: white;
+      border-color: white;
+    }
+
+    footer {
+      padding: 28px 0;
+      background: var(--night);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    html.js .reveal {
+      opacity: 0;
+      transform: translateY(52px);
+      transition: opacity 1s ease, transform 1s cubic-bezier(.18, .75, .22, 1);
+    }
+
+    html.js .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    html.js .about-copy {
+      transition-delay: .13s;
+    }
+
+    @media (max-width: 900px) {
+      .about-layout {
+        grid-template-columns: 1fr;
+        gap: 42px;
+      }
+
+      .about-layout h2 {
+        white-space: normal;
+      }
+
+      .research-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .research-visual {
+        position: relative;
+        top: auto;
+        width: 100%;
+        height: 350px;
+      }
+
+      .research-steps {
+        padding-bottom: 0;
+      }
+
+      .research-step {
+        min-height: auto;
+        padding: 54px 0;
+        opacity: 1;
+      }
+
+      html.js .research-step h3,
+      html.js .research-step p:last-child {
+        transform: none;
+        opacity: 1;
+      }
+
+      .research-heading>p:last-child {
+        margin-bottom: 55px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        width: calc(100% - 40px);
+      }
+
+      .site-header {
+        height: 62px;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .site-nav {
+        display: none;
+        position: absolute;
+        top: 62px;
+        left: 0;
+        right: 0;
+        padding: 25px 20px 35px;
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, .45);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .site-nav.is-open {
+        display: flex;
+      }
+
+      .site-nav a {
+        display: block;
+        padding: 13px 0;
+        font-size: 1.1rem;
+      }
+
+      .menu-open .nav-toggle span:first-child {
+        transform: translateY(7px) rotate(45deg);
+      }
+
+      .menu-open .nav-toggle span:last-child {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      .menu-open .nav-toggle span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .about {
+        padding: 78px 0;
+      }
+
+      .about-layout {
+        gap: 32px;
+      }
+
+      .about-layout h2 {
+        margin-top: 16px;
+        font-size: clamp(3.6rem, 14vw, 5rem);
+      }
+
+      .education {
+        margin-top: 28px;
+      }
+
+      .research {
+        padding: 100px 0 65px;
+      }
+
+      .research-heading h2 {
+        margin-top: 20px;
+      }
+
+      .research-visual {
+        height: 290px;
+      }
+
+      .signal-core {
+        width: 84px;
+      }
+
+      .signal-tag {
+        font-size: .55rem;
+      }
+
+      .research-step {
+        padding: 44px 0;
+      }
+
+      .publications {
+        padding: 100px 0;
+      }
+
+      .pub-intro {
+        margin-bottom: 45px;
+      }
+
+      .paper-list li {
+        grid-template-columns: 35px 1fr;
+        gap: 10px;
+        padding: 25px 0;
+      }
+
+      .paper-year {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: left;
+        padding: 4px 0 0;
+      }
+
+      .paper-journal {
+        font-size: .82rem;
+      }
+
+      .contact {
+        min-height: 65svh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      html.js .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      html.js .research-step h3,
+      html.js .research-step p:last-child {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Wenlan Xie, back to top"><img class="brand-mark"
+          src="images/wenlan-mark.svg" alt="" width="46" height="46"></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"
+        aria-label="Open navigation"><span></span><span></span><span></span></button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="#about">About</a><a href="#research">Research</a><a href="#pubs">Publications</a><a
+          href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-<div id="loader" aria-hidden="true">
-  <div id="bootlog">
-    <div>$ import wenlan_xie as wx</div>
-    <div>&gt; loading market data <span class="ok">........ ok</span></div>
-    <div>&gt; estimating parameters <span class="ok">β̂ converged</span></div>
-    <div>&gt; rendering <span class="ok">R² = 0.99</span></div>
-  </div>
-</div>
+  <main>
+    <!-- Hero v2 (preview). The particle story uses ILLUSTRATIVE data and reviews; see DATA in the script before publishing. -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-stage">
+        <canvas class="hero-gl" id="hero-gl" aria-hidden="true"></canvas>
+        <div class="hero-veil" aria-hidden="true"></div>
+        <canvas class="hero-ui" id="hero-ui" aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <div class="container">
+            <div class="act act-0">
+              <p class="eyebrow">Wenlan (Tony) Xie</p>
+              <h1 class="display" id="hero-title">Finding <span class="serif sig">signal</span> in the noise.</h1>
+              <p class="lead">Economics research on language and financial markets.</p>
+            </div>
+            <div class="act act-1">
+              <p class="eyebrow">01 / Words</p>
+              <p class="display">The most important signals arrive as <span class="serif">words.</span></p>
+              <p class="lead">One review is an opinion. Thousands of them start to look like a forecast.</p>
+            </div>
+            <div class="act act-2">
+              <p class="eyebrow">02 / Measurement</p>
+              <p class="display">A language model reads <span class="serif">every one.</span></p>
+              <p class="lead">Each review becomes a sentiment score, measured the same way at any scale.</p>
+            </div>
+            <div class="act act-3">
+              <p class="eyebrow">03 / Evidence</p>
+              <p class="display">From words to <span class="serif sig">evidence.</span></p>
+              <p class="lead">Then the real test: does that sentiment show up in returns?</p>
+              <a class="cite" href="#pubs"><span>Read the paper</span><b>Reading Between the Reels</b><span>IJFE 2026</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-foot container">
+          <ol class="hero-steps">
+            <li class="on">Noise</li>
+            <li>Words</li>
+            <li>Scores</li>
+            <li>Evidence</li>
+          </ol>
+          <span class="hero-hint">Hover any dot to read its review</span>
+        </div>
+        <div class="hero-tip" aria-hidden="true">
+          <p class="tip-film"></p>
+          <p class="tip-text"></p>
+          <div class="tip-row"><span>LLM sentiment</span><span class="tip-bar"><b></b></span><em class="tip-score"></em></div>
+          <p class="tip-tag">Illustrative review</p>
+        </div>
+        <span class="hero-progress-line" aria-hidden="true"></span>
+      </div>
+    </section>
 
-<header>
-  <a class="logo" href="#hero"><b>Xie, W.</b>&nbsp;(Tony)</a>
-  <nav>
-    <a href="#about">ABOUT</a>
-    <a href="#research">RESEARCH</a>
-    <a href="#pubs">PUBLICATIONS</a>
-    <a href="#log">LOG</a>
-    <a href="#contact">CONTACT</a>
-  </nav>
-</header>
-
-<div id="rail">
-  <div id="wxi">WXI <b>1000.00</b></div>
-  <div id="dots">
-    <a href="#hero" aria-label="Top"></a>
-    <a href="#about" aria-label="About"></a>
-    <a href="#research" aria-label="Research"></a>
-    <a href="#pubs" aria-label="Publications"></a>
-    <a href="#log" aria-label="News log"></a>
-    <a href="#contact" aria-label="Contact"></a>
-  </div>
-</div>
-
-<!-- ═══════════ HERO ═══════════ -->
-<section id="hero">
-  <canvas id="heroCanvas"></canvas>
-  <div class="wrap" style="z-index:2">
-    <p class="hero-kick">ECONOMICS · THE UNIVERSITY OF CHICAGO · <span>EST. SIGNAL &gt; NOISE</span></p>
-    <h1><span class="hl">Wenlan</span><br><span class="hl thin">Xie</span></h1>
-    <p class="hero-sub">TEXT AS DATA<span class="x">×</span>LLMs<span class="x">×</span>FINANCIAL ECONOMICS<span class="cursor"></span></p>
-  </div>
-  <div class="scrollhint">SCROLL ▼</div>
-  <div id="ticker"><div class="belt" id="belt"></div></div>
-  <div class="hero-shade" aria-hidden="true"></div>
-</section>
-
-<!-- ═══════════ ABOUT ═══════════ -->
-<section id="about">
-  <div class="plx-grid" aria-hidden="true"></div>
-  <div class="ghost" data-plx="0.24" aria-hidden="true">01</div>
-  <span class="deco x g" data-plx="-0.3" style="left:2.4vw;top:15%" aria-hidden="true">+</span>
-  <span class="deco" data-plx="-0.18" style="right:8vw;top:47%" aria-hidden="true">β̂</span>
-  <span class="deco x" data-plx="0.35" style="right:5vw;top:80%" aria-hidden="true">+</span>
-  <div class="wrap">
-    <p class="kicker rv" data-plx="0.1">§01 / ABOUT</p>
-    <h2 class="h-huge rv rv2" style="margin-bottom:64px" data-plx="0.06"><span class="ln" data-plx-in="-0.13">The</span><br><span class="ln" data-plx-in="0.17">Author</span></h2>
-    <div class="about-grid">
-      <figure class="photo rv rv2" data-plx="-0.045" data-plx-d>
-        <span class="ph"><img src="images/portrait.jpg" alt="Wenlan (Tony) Xie" data-plx="0.04" data-plx-max="24" onerror="this.closest('.photo').classList.add('noimg')"></span>
-        <div class="mono-fallback">W.X</div>
-        <!-- <figcaption>FIG. 1 — THE AUTHOR · CHICAGO, IL</figcaption> -->
-      </figure>
-      <div class="bio">
-        <p class="rv">I am an Economics student at <b>The University of Chicago</b>. Previously, I obtained my Master of Commerce in Data Analytics from the University of Sydney <b>(Distinction)</b> and my Bachelor's degree from the University of Canterbury.</p>
-        <p class="rv rv2">I am interested in using <b>NLP</b> and <b>large language models</b> to study <b>information disclosure</b>, <b>corporate decision-making</b>, and <b>investor attention</b> — treating text as data to turn unstructured information into economic insight.</p>
-        <ul class="edu rv rv3">
-          <li><span class="tag">CURRENT</span><span class="deg">The University of Chicago<em>Economics</em></span></li>
-          <li><span class="tag">M.COM</span><span class="deg">University of Sydney<em>Data Analytics · with Distinction</em></span></li>
-          <li><span class="tag">B.A.</span><span class="deg">University of Canterbury</span></li>
-        </ul>
-        <div id="fitbox" class="rv rv4">
-          <span class="fitlabel">ORDINARY LEAST SQUARES, LIVE</span>
-          <canvas id="fitCanvas"></canvas>
-          <div class="fitbar">
-            <span>ŷ = α̂ + β̂x &nbsp;·&nbsp; <span class="est" id="est">β̂ = — , R² = —</span></span>
-            <button id="refit">RE-ESTIMATE ↻</button>
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about-layout">
+          <div class="reveal">
+            <p class="eyebrow section-label">01 / About</p>
+            <h2 class="display" id="about-title">Wenlan <span class="serif">Xie.</span></h2>
+          </div>
+          <div class="about-copy reveal">
+            <p class="about-lede">Economics at the University of Chicago.</p>
+            <p>I study how language shapes disclosure, investor attention, and financial markets.</p>
+            <ul class="education" aria-label="Education">
+              <li><small>Now</small><span>University of Chicago · Economics</span></li>
+              <li><small>M.Com</small><span>University of Sydney · Data Analytics</span></li>
+              <li><small>B.A.</small><span>University of Canterbury</span></li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
-    <div class="stats">
-      <div class="stat rv"><div class="n" data-count="7">0</div><div class="l">PEER-REVIEWED ARTICLES</div></div>
-      <div class="stat rv rv2"><div class="n" data-count="7">0</div><div class="l">CONFERENCE PRESENTATIONS</div></div>
-      <div class="stat rv rv3"><div class="n" data-count="9">0</div><div class="l">JOURNALS REFEREED FOR</div></div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ═══════════ RESEARCH ═══════════ -->
-<section id="research">
-  <div class="plx-grid" aria-hidden="true"></div>
-  <div class="ghost" data-plx="0.24" aria-hidden="true">02</div>
-  <span class="deco" data-plx="-0.22" style="left:2.4vw;top:31%" aria-hidden="true">σ²</span>
-  <span class="deco x a" data-plx="-0.35" style="right:7vw;top:11%" aria-hidden="true">+</span>
-  <span class="deco" data-plx="-0.15" style="right:5vw;top:72%" aria-hidden="true">∑</span>
-  <div class="wrap">
-    <p class="kicker rv" data-plx="0.1">§02 / RESEARCH</p>
-    <h2 class="h-huge rv rv2" style="margin-bottom:56px" data-plx="0.06"><span class="ln" data-plx-in="0.16">Method</span><br><span class="ln" data-plx-in="-0.13">&amp; Madness</span></h2>
-    <p class="lede rv rv3">My work bridges the gap between <b>unstructured data</b> and <b>economic theory</b>. I apply computational methods and causal inference strategies to uncover behavioral anomalies and understand market dynamics — currently, constructing novel datasets from textual information to predict market returns and analyze investor behavior.</p>
-    <div class="cards">
-      <div class="card rv" data-plx="0.05" data-plx-d><canvas class="spark" data-seed="3"></canvas><h3>ECONOMETRICS</h3>
-        <ul><li>Causal Inference — DID · IV · RDD</li><li>Panel Regression</li><li>Time Series Analysis</li><li>Monte Carlo Simulation</li></ul></div>
-      <div class="card rv rv2"><canvas class="spark" data-seed="7"></canvas><h3>MACHINE LEARNING</h3>
-        <ul><li>NLP · LLM-based Sentiment</li><li>TensorFlow · PyTorch</li><li>Scikit-learn</li><li>Text-as-data pipelines</li></ul></div>
-      <div class="card rv rv3" data-plx="-0.05" data-plx-d><canvas class="spark" data-seed="11"></canvas><h3>TOOLKIT</h3>
-        <ul><li>Python · R · Stata</li><li>SQL</li><li>LaTeX</li><li>JavaScript</li></ul></div>
-    </div>
-    <div class="xp">
-      <div class="xp-row rv">
-        <div class="xp-meta" data-plx="0.05" data-plx-d>RESEARCH ASSISTANT<br><span class="org">UCHICAGO</span></div>
-        <div class="xp-body">
-          <h4>Econometric Identification &amp; Replication</h4>
-          <p>Replicating empirical tables and figures by translating partial identification strategies into Python/R code. Designing Monte Carlo simulations to evaluate finite-sample bias and variance of new estimators.</p>
+    <section class="research" id="research" aria-labelledby="research-title">
+      <div class="container">
+        <div class="research-heading reveal">
+          <p class="eyebrow">02 / Research</p>
+          <h2 class="display" id="research-title">Language into <span class="serif">evidence.</span></h2>
+          <p>Studying how information shapes decisions.</p>
+        </div>
+        <div class="research-grid">
+          <div class="research-visual" data-current="0" aria-hidden="true">
+            <div class="signal-core">SIGNAL</div>
+            <span class="signal-tag">LANGUAGE</span>
+            <span class="signal-tag">METHOD</span>
+            <span class="signal-tag">MARKETS</span>
+            <span class="visual-foot">TEXT → DATA → INSIGHT</span>
+          </div>
+          <div class="research-steps">
+            <article class="research-step is-active" data-step="0">
+              <p class="eyebrow">01 / Language</p>
+              <h3>Make text measurable.</h3>
+              <p>Language models turn disclosure and sentiment into data.</p>
+            </article>
+            <article class="research-step" data-step="1">
+              <p class="eyebrow">02 / Method</p>
+              <h3>Separate signal from noise.</h3>
+              <p>Econometrics and simulation test what the patterns mean.</p>
+            </article>
+            <article class="research-step" data-step="2">
+              <p class="eyebrow">03 / Markets</p>
+              <h3>Understand decisions.</h3>
+              <p>Corporate disclosure, investor attention, and financial outcomes.</p>
+            </article>
+          </div>
         </div>
       </div>
-      <div class="xp-row rv">
-        <div class="xp-meta" data-plx="0.05" data-plx-d>RESEARCH ASSISTANT<br><span class="org">HKU</span></div>
-        <div class="xp-body">
-          <h4>Corporate Disclosure &amp; Environmental Regulation</h4>
-          <p>Constructed a large-scale dataset by crawling hundreds of thousands of corporate disclosure records. Estimated the causal impact of environmental regulations on firm behavior using quasi-experimental designs.</p>
+    </section>
+
+    <section class="publications" id="pubs" aria-labelledby="pubs-title">
+      <div class="container">
+        <div class="pub-intro reveal">
+          <div>
+            <p class="eyebrow section-label">03 / Publications</p>
+            <h2 class="display" id="pubs-title">Selected <span class="serif">work.</span></h2>
+          </div>
         </div>
+        <ol class="paper-list">
+          <li class="reveal">
+            <div>
+              <h3>Integrating Monetary and Environmental Goals: Exploring the Impact of Green Monetary Policy on
+                Corporate Environmental Disclosure</h3>
+              <p class="paper-journal">Accounting Forum · forthcoming</p>
+            </div><span class="paper-year">2026</span>
+          </li>
+          <li class="reveal">
+            <div>
+              <h3>Reading Between the Reels: AI-Powered Analysis on Movie Review Sentiment as a Predictor of Market
+                Returns</h3>
+              <p class="paper-journal">International Journal of Finance and Economics</p>
+            </div><span class="paper-year">2026</span>
+          </li>
+        </ol>
+        <a class="text-link all-work" href="https://scholar.google.com/citations?user=c6KbPykAAAAJ" target="_blank"
+          rel="noopener noreferrer">Full publication record <span aria-hidden="true">↗</span></a>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ═══════════ BAND (scroll-linked) ═══════════ -->
-<div class="band" aria-hidden="true">
-  <div class="row r1" data-plx-x="0.45" data-rep="TEXT AS DATA|LLMs|FINANCIAL ECONOMICS"></div>
-  <div class="row r2" data-plx-x="-0.3" data-rep="DID|IV|RDD|PANEL|NLP|SIGNAL &gt; NOISE"></div>
-</div>
-
-<!-- ═══════════ PUBLICATIONS ═══════════ -->
-<section id="pubs">
-  <div class="plx-grid" aria-hidden="true"></div>
-  <div class="ghost" data-plx="0.24" aria-hidden="true">03</div>
-  <span class="deco" data-plx="-0.2" style="left:2.4vw;top:12%" aria-hidden="true">H₀</span>
-  <span class="deco x g" data-plx="-0.3" style="right:6vw;top:41%" aria-hidden="true">+</span>
-  <span class="deco x" data-plx="0.3" style="left:2.4vw;top:76%" aria-hidden="true">+</span>
-  <div class="wrap">
-    <p class="kicker rv" data-plx="0.1">§03 / OUTPUT</p>
-    <div class="pub-head">
-      <h2 class="h-huge rv rv2" data-plx="0.06"><span class="ln" data-plx-in="-0.13">Publica&#8202;—</span><br><span class="ln" data-plx-in="0.17">tions</span></h2>
-      <div class="pub-count rv rv3" data-plx="0.1" data-plx-d><br>PEER-REVIEWED JOURNAL ARTICLES<br>BY XIE, W.</div>
-    </div>
-    <ol class="publist">
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2026</span><div>
-        <div class="pub-t">Integrating Monetary and Environmental Goals: Exploring the Impact of Green Monetary Policy on Corporate Environmental Disclosure</div>
-        <div class="pub-a">Tian, H., <mark>Xie, W.</mark><span class="role">CORR.</span>, &amp; Zhang, Y.</div>
-        <div class="pub-j">Accounting Forum, forthcoming</div></div></li>
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2026</span><div>
-        <div class="pub-t">Reading Between the Reels: AI-Powered Analysis on Movie Review Sentiment as a Predictor of Market Returns</div>
-        <div class="pub-a">Tian, H., <mark>Xie, W.</mark><span class="role">CORR.</span>, &amp; Zhang, Y.</div>
-        <div class="pub-j">International Journal of Finance and Economics, 0:1–33</div></div></li>
-      <!-- <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2025</span><div>
-        <div class="pub-t">From Responsibility to Resilience: How Targeted Poverty Alleviation Strengthens Firms</div>
-        <div class="pub-a">Tian, H., Sun, K., &amp; <mark>Xie, W.</mark><span class="role">CORR.</span></div>
-        <div class="pub-j">Post-Communist Economies, 37(4), 386–403</div></div></li> -->
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2024</span><div>
-        <div class="pub-t">Green Effect of Energy Transition Policy: A Quasi-natural Experiment Based on New Energy Demonstration Cities</div>
-        <div class="pub-a">Yu, Z., <mark>Xie, W.</mark><span class="role">CO-FIRST</span>, Guo, J., &amp; Yang, Z.</div>
-        <div class="pub-j">Finance Research Letters, 105669</div></div></li>
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2024</span><div>
-        <div class="pub-t">Dual Green Innovation Capability, Environmental Regulation Intensity, and High-Quality Economic Development in China</div>
-        <div class="pub-a">Guo, Y., <mark>Xie, W.</mark>, &amp; Yang, Y.</div>
-        <div class="pub-j">Finance Research Letters, 63, 105275</div></div></li>
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2024</span><div>
-        <div class="pub-t">Nexus of Green Energy Innovation, Governance Quality, and CO₂ Emissions in Natural Resource Sector</div>
-        <div class="pub-a">Zhang, S., <mark>Xie, W.</mark>, Sun, S., Wu, F., &amp; Xue, Y.</div>
-        <div class="pub-j">Resources Policy, 88, 104493</div></div></li>
-      <li class="rv"><span class="pub-yr" data-plx="0.03" data-plx-d>2023</span><div>
-        <div class="pub-t">The Effect of the COVID-19 Pandemic on Corporate Trade Credit Financing</div>
-        <div class="pub-a"><mark>Xie, W.</mark>, &amp; Tian, H.</div>
-        <div class="pub-j">Economics Letters, 232, 111339</div></div></li>
-    </ol>
-    <div class="subcols">
-      <div class="rv">
-        <h3>SELECTED CONFERENCE PRESENTATIONS</h3>
-        <ul class="conf">
-          <li><span class="y">2026</span><span>AMA Winter Academic Conference — Madrid, Spain</span></li>
-          <li><span class="y">2025</span><span>INFORMS International Meeting — Singapore</span></li>
-          <li><span class="y">2024</span><span>INFORMS Annual Meeting — Seattle, US</span></li>
-          <li><span class="y">2024</span><span>Global Chinese Accounting Association Summit — Perth</span></li>
-          <li><span class="y">2024</span><span>INFORMS Marketing Science Conference — Sydney</span></li>
-          <li><span class="y">2024</span><span>5th Vietnam Symposium on Global Economic Issues — Ho Chi Minh City</span></li>
-          <li><span class="y">2024</span><span>Green Finance and Accounting Conference — Shanghai</span></li>
-        </ul>
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="container reveal">
+        <p class="eyebrow">04 / Contact</p>
+        <h2 class="display" id="contact-title">Let's <span class="serif">connect.</span></h2>
+        <a class="contact-email" href="mailto:wenlanx@uchicago.edu">wenlanx@uchicago.edu</a>
+        <div class="contact-links"><a href="https://scholar.google.com/citations?user=c6KbPykAAAAJ" target="_blank"
+            rel="noopener noreferrer">Google Scholar ↗</a><a href="https://github.com/WLXie-Tony" target="_blank"
+            rel="noopener noreferrer">GitHub ↗</a></div>
       </div>
-      <div class="rv rv2">
-        <h3>ACADEMIC SERVICE — REFEREE FOR</h3>
-        <p class="svc"><em>Applied Economics</em> · <em>Applied Economics Letters</em> · <em>Review of Quantitative Finance and Accounting</em> · <em>Finance Research Letters</em> · <em>International Review of Economics &amp; Finance</em> · <em>Scientific Reports</em> · <em>Information Processing &amp; Management</em> · <em>Economics of Governance</em> · <em>Discover Sustainability</em></p>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<!-- ═══════════ LOG ═══════════ -->
-<section id="log">
-  <div class="plx-grid" aria-hidden="true"></div>
-  <div class="ghost" data-plx="0.24" aria-hidden="true">04</div>
-  <span class="deco x g" data-plx="-0.3" style="right:8vw;top:28%" aria-hidden="true">+</span>
-  <span class="deco" data-plx="-0.2" style="left:2.4vw;top:62%" aria-hidden="true">Δt</span>
-  <div class="wrap">
-    <p class="kicker rv" data-plx="0.1">§04 / LOG</p>
-    <h2 class="h-huge rv rv2" style="margin-bottom:40px" data-plx="0.06"><span class="ln" data-plx-in="0.16">Latest</span><br><span class="ln" data-plx-in="-0.13">Prints</span></h2>
-    <ul class="loglist">
-      <li class="rv"><span class="ts">2026-03</span><span class="ev">▲ PUBLISHED</span><span>“Integrating Monetary and Environmental Goals” — <i>Accounting Forum</i></span></li>
-      <li class="rv rv2"><span class="ts">2026-02</span><span class="ev d">◆ ACCEPTED</span><span>Paper to be presented at the <i>2026 AMA Winter Academic Conference</i>, Madrid</span></li>
-      <li class="rv rv3"><span class="ts">2026-01</span><span class="ev">▲ PUBLISHED</span><span>“Reading Between the Reels” — <i>International Journal of Finance and Economics</i></span></li>
-    </ul>
-  </div>
-</section>
+  <footer>
+    <div class="container"><span>© 2026 Wenlan (Tony) Xie</span><span>Chicago, Illinois</span></div>
+  </footer>
 
-<!-- ═══════════ CONTACT ═══════════ -->
-<section id="contact">
-  <div class="plx-grid" aria-hidden="true"></div>
-  <div class="ghost" data-plx="0.24" aria-hidden="true">05</div>
-  <span class="deco" data-plx="-0.22" style="left:2.4vw;top:24%" aria-hidden="true">ε</span>
-  <span class="deco x a" data-plx="-0.32" style="right:9vw;top:64%" aria-hidden="true">+</span>
-  <canvas id="pulseCanvas"></canvas>
-  <div class="wrap">
-    <p class="kicker rv" data-plx="0.1">§05 / CONTACT</p>
-    <h2 class="h-huge rv rv2" data-plx="0.06"><span class="ln" data-plx-in="-0.13">Long</span><br><span class="ln" data-plx-in="0.16">this idea?</span></h2>
-    <a class="mail rv rv3" href="mailto:wenlanx@uchicago.edu">wenlanx@uchicago.edu</a>
-    <div class="chips rv rv4">
-      <a class="chip" href="https://scholar.google.com/citations?user=c6KbPykAAAAJ" target="_blank" rel="noopener">⌂ GOOGLE SCHOLAR</a>
-      <a class="chip" href="https://github.com/WLXie-Tony" target="_blank" rel="noopener">⌥ GITHUB</a>
-    </div>
-    <p class="coords rv rv4">41.7943° N, 87.5907° W — CHICAGO, ILLINOIS, UNITED STATES</p>
-  </div>
-</section>
+  <script>
+    (() => {
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      if (!reducedMotion.matches) document.documentElement.classList.add('js');
 
-<footer>
-  <span>© 2026 WENLAN (TONY) XIE. ALL RIGHTS RESERVED.</span>
-  <span>WXI <span class="u" id="wxiFoot">▲ CLOSED HIGHER</span> · NO COOKIES · NO TRACKING</span>
-</footer>
+      /* ===== Hero: noise, words, scores, evidence =====
+         Motion runs on the GPU: particle targets are uploaded once, and each frame only sends a few numbers.
+         Every stretch of the pinned scroll moves something, so the scene never stalls and never jumps. */
+      {
+        const SMOOTH_WHEEL = true; // inertial mouse-wheel scrolling on desktop; set to false to keep the browser default
 
-<script>
-(() => {
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+        const hero = document.querySelector('.hero');
+        const stageEl = hero.querySelector('.hero-stage');
+        let glCanvas = document.getElementById('hero-gl');
+        const uiCanvas = document.getElementById('hero-ui');
+        const ui = uiCanvas.getContext('2d');
+        const acts = [...hero.querySelectorAll('.act')];
+        const stepItems = [...hero.querySelectorAll('.hero-steps li')];
+        const progressLine = hero.querySelector('.hero-progress-line');
+        const tip = hero.querySelector('.hero-tip');
+        const tipFilm = tip.querySelector('.tip-film');
+        const tipText = tip.querySelector('.tip-text');
+        const tipBar = tip.querySelector('.tip-bar b');
+        const tipScore = tip.querySelector('.tip-score');
+        const tipTag = tip.querySelector('.tip-tag');
+        const finePointer = matchMedia('(pointer: fine)').matches;
+        const reduced = reducedMotion.matches;
+        const wheelSmoothing = SMOOTH_WHEEL && finePointer && !reduced;
+        if (!finePointer) hero.querySelector('.hero-hint').textContent = 'Tap a dot to read its review';
+        const SIGNAL = '#ff5b30';
+        const INK = '#f2f1ed';
+        const MUTED = '#a2a4a8';
+        const MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 
-/* ---------- seeded rng ---------- */
-const mulberry=(a)=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+        /* ILLUSTRATIVE DATA. Nothing here comes from the paper yet.
+           Before this goes live, replace makeData() with the paper's numbers (per-observation
+           sentiment and returns, or a random subsample), set the slope from your estimates,
+           and swap the synthetic snippets below for reviews you are allowed to quote. */
+        const DATA = {
+          quote: '“Messy, loud, and worth every cent of the ticket.”',
+          quoteScore: .81,
+          mix: [[.68, .34, .33], [.32, -.38, .36]], // sentiment: [weight, mean, sd] mixture
+          alpha: .02, beta: .15, noise: .62,         // return (%) = alpha + beta * sentiment + noise
+          bins: 20
+        };
+        const FILM_A = ['Quiet', 'Paper', 'Northern', 'Last', 'Electric', 'Silver', 'Borrowed', 'Velvet', 'Hollow', 'Midnight', 'Lucky', 'Glass', 'Second', 'Golden', 'Distant', 'Crooked'];
+        const FILM_B = ['Harbor', 'Moons', 'Summer', 'Kingdom', 'Season', 'Engine', 'Orchard', 'Frontier', 'Static', 'Avenue', 'Weather', 'Tides', 'Machine', 'Garden', 'Witness', 'Country'];
+        const POOLS = [
+          [['Two hours I will never get back.', 'A loud, hollow mess.', 'I checked my watch four times.', 'Nothing here works.', 'The script feels unfinished.'],
+            ['Skip it.', 'Even the music is forgettable.', 'The cast deserved better.', 'I wanted to leave by the second act.', 'Wait for streaming, then skip it there too.']],
+          [['It never quite comes together.', 'Pretty to look at, tiring to sit through.', 'The middle hour drags.', 'Too long by half.', 'A good idea buried under a weak script.'],
+            ['Not terrible, just flat.', 'Fans may forgive it. I could not.', 'One great scene does not save it.', 'I expected more from this director.', 'Mostly a shrug.']],
+          [['Uneven, but never boring.', 'Half of a great movie.', 'The leads carry a thin story.', 'Some of it lands, some of it does not.', 'Better than the trailer, worse than the book.'],
+            ['Worth a matinee.', 'Your mileage may vary.', 'I am still not sure how I feel.', 'Fine for a Friday night.', 'Solid, if forgettable.']],
+          [['A warm, clever surprise.', 'Funnier than it has any right to be.', 'The cast is having a great time.', 'Smart, quick, and well made.', 'It earns its ending.'],
+            ['Easy to recommend.', 'I would watch it again.', 'Bring a friend.', 'A very good night at the movies.', 'The kind of film that sticks around.']],
+          [['I did not expect to cry at a heist movie.', 'Gorgeous from the first frame.', 'The best thing I have seen this year.', 'Messy, loud, and worth every cent.', 'The last twenty minutes are pure cinema.'],
+            ['See it on the biggest screen you can.', 'An instant favorite.', 'I want to go back tomorrow.', 'Our whole row applauded.', 'Do not miss this one.']]
+        ];
 
-/* ---------- loader ---------- */
-const loader=$('#loader');
-const killLoader=()=>loader.classList.add('done');
-setTimeout(killLoader, reduced?100:1600);
-['wheel','touchstart','click','keydown'].forEach(e=>addEventListener(e,killLoader,{once:true,passive:true}));
+        /* Timeline, as fractions of the pinned scroll. Windows overlap so there is no dead stretch.
+           [start, end, stagger]: with stagger k each dot moves during (1 - k) of the window, and dots start one after another. */
+        const T_WORDS = [.03, .31, .62];   // noise gathers into the quote (random order)
+        const T_HIST = [.32, .58, .72];    // the quote pours into the histogram, bottom rows first
+        const T_SCAT = [.55, .76, .62];    // the histogram fans out into the scatter, left to right
+        const T_ZOOM = [.72, .93];         // the return axis zooms in on the signal
+        const T_BINS = [.80, .93];
+        const T_LINE = [.86, .98];
+        const ACT = [                      // [fade in from, to, fade out from, to, drift centre]
+          [-1, 0, .08, .15, 0],
+          [.13, .2, .34, .41, .27],
+          [.4, .47, .58, .65, .53],
+          [.63, .7, 2, 3, .84]
+        ];
+        const DRIFT = 150;                 // px of slow upward drift per unit of progress while text is on screen
 
-/* ---------- ticker ---------- */
-const items=[
- ['u','WXI ▲ +2.31%'],['','ECONOMICS LETTERS 232 · 111339'],['u','ACCT FORUM ▲ FORTHCOMING'],
- ['','INT J FIN &amp; ECON 0:1–33'],['d','NOISE ▼ −1.02%'],['','FINANCE RESEARCH LETTERS ×2'],
- ['u','SIGNAL ▲ +0.87%'],['','POST-COMMUNIST ECONOMIES 37(4)'],['','RESOURCES POLICY 88 · 104493'],
- ['u','CAUSALITY ▲ IDENTIFIED'],['','DID · IV · RDD · PANEL · NLP'],['d','P-VALUE ▼ 0.001']];
-const belt=$('#belt');
-belt.innerHTML=(items.concat(items)).map(([c,t])=>`<span class="${c}">${t}</span>`).join('');
+        const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+        const smooth = t => t * t * (3 - 2 * t);
+        const ease = (a, b, p) => smooth(clamp01((p - a) / (b - a)));
+        const ss = x => { x = clamp01(x); return x * x * x * (x * (x * 6 - 15) + 10); };
+        const win = (p, w, d) => ss((p - w[0] - d * w[2] * (w[1] - w[0])) / ((w[1] - w[0]) * (1 - w[2])));
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const hash = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
+        const rng = seed => () => {
+          seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+          let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+        const fmt = n => n.toLocaleString('en-US');
+        const signed = (v, dp) => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(dp);
 
-/* ---------- reveal on scroll ---------- */
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}}),{threshold:.12});
-$$('.rv').forEach(el=>io.observe(el));
+        function makeData(N) {
+          const r = rng(20260119);
+          const gauss = () => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(6.2831853 * v); };
+          const score = new Float32Array(N), ret = new Float32Array(N);
+          const s1 = new Float32Array(N), s2 = new Float32Array(N), s3 = new Float32Array(N);
+          for (let i = 0; i < N; i++) {
+            let u = r(), k = 0, acc = DATA.mix[0][0];
+            while (u > acc && k < DATA.mix.length - 1) { k++; acc += DATA.mix[k][0]; }
+            let s;
+            do s = DATA.mix[k][1] + DATA.mix[k][2] * gauss(); while (s < -.97 || s > .97);
+            score[i] = s;
+            ret[i] = DATA.alpha + DATA.beta * s + DATA.noise * gauss();
+            s1[i] = r(); s2[i] = r(); s3[i] = r();
+          }
+          let mx = 0, my = 0;
+          for (let i = 0; i < N; i++) { mx += score[i]; my += ret[i]; }
+          mx /= N; my /= N;
+          let sxy = 0, sxx = 0, syy = 0;
+          for (let i = 0; i < N; i++) { const dx = score[i] - mx, dy = ret[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+          const slope = sxy / sxx, icpt = my - slope * mx;
+          const order = Array.from({ length: N }, (_, i) => i).sort((a, b) => score[a] - score[b]);
+          const bins = [];
+          for (let j = 0; j < DATA.bins; j++) {
+            const lo = Math.floor(j * N / DATA.bins), hi = Math.floor((j + 1) * N / DATA.bins);
+            let bx = 0, by = 0;
+            for (let q = lo; q < hi; q++) { bx += score[order[q]]; by += ret[order[q]]; }
+            bins.push([bx / (hi - lo), by / (hi - lo)]);
+          }
+          const bys = bins.map(b => b[1]);
+          return { score, ret, s1, s2, s3, slope, icpt, bins, my, sd: Math.sqrt(syy / N), bmin: Math.min(...bys), bmax: Math.max(...bys) };
+        }
 
-/* ---------- parallax engine ----------
-   data-plx="s"    vertical depth: s>0 sits behind the page (drifts slower), s<0 floats in front (faster)
-   data-plx-x="s"  horizontal drift tied to scroll
-   data-plx-in="s" horizontal slide that settles into place by the time the element reaches mid-screen
-   data-plx-d      desktop only          data-plx-max="px"  clamp
-   Uses the standalone CSS `translate` property so it never fights the .rv / :hover transforms. */
-const PLX=!reduced&&!!(window.CSS&&CSS.supports&&CSS.supports('translate','1px 1px'));
-if(PLX)document.documentElement.classList.add('plx');
-$$('.band .row').forEach(r=>{
-  const sep=r.classList.contains('r1')?'<i>×</i>':'<b>·</b>';
-  r.innerHTML=Array(r.classList.contains('r1')?4:9).fill(r.dataset.rep.split('|').join(sep)+sep).join('');
-});
-const plx=PLX?$$('[data-plx],[data-plx-x],[data-plx-in]').map(el=>({el,sy:+el.dataset.plx||0,sx:+el.dataset.plxX||0,si:+el.dataset.plxIn||0,max:+el.dataset.plxMax||0,desk:el.hasAttribute('data-plx-d'),c:0,h:0,on:false})):[];
-let vh=innerHeight,mob=innerWidth<820,heroH=innerHeight;
-const grids=PLX?$$('.plx-grid').map(el=>({el,sec:el.parentElement,top:0,h:0})):[];
-const plxUpdate=y=>{
-  const k=mob?.5:1;
-  for(const g of grids){
-    const rel=y-g.top;
-    if(rel<-vh-200||rel>g.h+200)continue;
-    const ph=((rel*.18*k)%90+90)%90; /* grid drifts at 18% of scroll speed, phase wrapped to one cell */
-    g.el.style.translate='0 '+(Math.floor(rel/90)*90-90+ph).toFixed(1)+'px';
+        function review(i) {
+          const s = D.score[i];
+          const P = POOLS[s < -.6 ? 0 : s < -.2 ? 1 : s < .2 ? 2 : s < .6 ? 3 : 4];
+          const text = P[0][Math.floor(hash(i, 21) * P[0].length)] + ' ' + P[1][Math.floor(hash(i, 22) * P[1].length)];
+          const title = (hash(i, 23) < .4 ? 'The ' : '') + FILM_A[Math.floor(hash(i, 24) * FILM_A.length)] + ' ' + FILM_B[Math.floor(hash(i, 25) * FILM_B.length)];
+          return { title, text };
+        }
+
+        /* ---------- one particle, in JavaScript. The vertex shader below is the same maths, line for line.
+           Used for hover hit-testing and for the 2D fallback. ---------- */
+        const STRIDE = 15; // nx ny | tx ty | hx hy | sx ret | s1 s2 s3 txt | dh dc | grey
+        let A = null;
+        function particle(i, U, o) {
+          const b0 = i * STRIDE;
+          const s1 = A[b0 + 8], s2 = A[b0 + 9], s3 = A[b0 + 10], txt = A[b0 + 11];
+          const a = win(U.p, T_WORDS, s1), b = win(U.p, T_HIST, A[b0 + 12]), c = win(U.p, T_SCAT, A[b0 + 13]);
+          const ang = U.t * .16 * (.6 + s2) + s3 * 6.2832;
+          const amp = (3 + s2 * 9) * (1 - txt * a) * (1 - b);
+          const nX = A[b0] + Math.cos(ang) * amp;
+          const nY = A[b0 + 1] + Math.sin(ang * 1.3) * amp - U.np * (40 + 220 * s3) * U.ps;
+          let x = lerp(nX, A[b0 + 2], a * txt), y = lerp(nY, A[b0 + 3] + U.qd, a * txt);
+          x = lerp(x, A[b0 + 4], b); y = lerp(y, A[b0 + 5], b);
+          const scY = U.ry + U.rh * (1 - (A[b0 + 7] - U.lo) / U.span);
+          x = lerp(x, A[b0 + 6], c); y = lerp(y, scY, c);
+          const w = s2 - .5;
+          y += (Math.sin(Math.PI * a) * 70 * txt + Math.sin(Math.PI * b) * 50 + Math.sin(Math.PI * c) * 36) * w;
+          x += Math.sin(Math.PI * b) * (s3 - .5) * 40;
+          let al = (.16 + .5 * s3) * (.78 + .22 * Math.sin(U.t * 2.1 * (.5 + s3) + s1 * 40));
+          al = lerp(al, lerp(.1, .95, txt), a);
+          al = lerp(al, .82, b);
+          al = lerp(al, .6, c);
+          if (c > 0) {
+            al *= 1 - .72 * U.zoom;
+            const oob = Math.max(U.ry - scY, scY - U.ry - U.rh);
+            if (oob > 0) al *= Math.max(0, 1 - oob / 70 * c);
+          }
+          o.x = x; o.y = y; o.al = al;
+          if (o.full) {
+            let sz = U.mob ? .9 + 1.1 * s3 : 1 + 1.3 * s3;
+            sz = lerp(sz, U.mob ? 1.5 : 1.9, a * txt);
+            sz = lerp(sz, U.colS * .8, b);
+            o.sz = lerp(sz, U.mob ? 1.5 : 1.8, c);
+            let g = .55 + .4 * s2;
+            g = lerp(g, .96, a * txt);
+            g = lerp(g, A[b0 + 14], b);
+            o.g = lerp(g, .8, c);
+          }
+        }
+
+        const VS = `
+precision highp float;
+attribute vec2 a_n; attribute vec2 a_t; attribute vec2 a_h; attribute vec2 a_sc;
+attribute vec4 a_r; attribute vec2 a_d; attribute float a_g;
+uniform vec2 u_res; uniform float u_dpr, u_p, u_t, u_np, u_ps, u_qd, u_lo, u_span, u_zoom, u_colS, u_mob, u_ry, u_rh;
+uniform vec3 u_w1, u_w2, u_w3;
+varying vec4 v_c; varying float v_k;
+float ss(float x){ x = clamp(x, 0.0, 1.0); return x * x * x * (x * (x * 6.0 - 15.0) + 10.0); }
+float win(vec3 w, float d){ return ss((u_p - w.x - d * w.z * (w.y - w.x)) / ((w.y - w.x) * (1.0 - w.z))); }
+void main(){
+  float s1 = a_r.x, s2 = a_r.y, s3 = a_r.z, txt = a_r.w;
+  float a = win(u_w1, s1), b = win(u_w2, a_d.x), c = win(u_w3, a_d.y);
+  float ang = u_t * 0.16 * (0.6 + s2) + s3 * 6.2832;
+  float amp = (3.0 + s2 * 9.0) * (1.0 - txt * a) * (1.0 - b);
+  float nX = a_n.x + cos(ang) * amp;
+  float nY = a_n.y + sin(ang * 1.3) * amp - u_np * (40.0 + 220.0 * s3) * u_ps;
+  float x = mix(nX, a_t.x, a * txt), y = mix(nY, a_t.y + u_qd, a * txt);
+  x = mix(x, a_h.x, b); y = mix(y, a_h.y, b);
+  float scY = u_ry + u_rh * (1.0 - (a_sc.y - u_lo) / u_span);
+  x = mix(x, a_sc.x, c); y = mix(y, scY, c);
+  float w = s2 - 0.5;
+  y += (sin(3.14159265 * a) * 70.0 * txt + sin(3.14159265 * b) * 50.0 + sin(3.14159265 * c) * 36.0) * w;
+  x += sin(3.14159265 * b) * (s3 - 0.5) * 40.0;
+  float al = (0.16 + 0.5 * s3) * (0.78 + 0.22 * sin(u_t * 2.1 * (0.5 + s3) + s1 * 40.0));
+  al = mix(al, mix(0.1, 0.95, txt), a);
+  al = mix(al, 0.82, b);
+  al = mix(al, 0.6, c);
+  if (c > 0.0) {
+    al *= 1.0 - 0.72 * u_zoom;
+    float oob = max(u_ry - scY, scY - u_ry - u_rh);
+    if (oob > 0.0) al *= max(0.0, 1.0 - oob / 70.0 * c);
   }
-  for(const o of plx){
-    if(o.desk&&mob){if(o.on){o.on=false;o.el.style.translate='';}continue;}
-    const pos=o.c-y-vh/2;
-    if(Math.abs(pos)>vh/2+o.h/2+260)continue;
-    let ty=-pos*o.sy*k;const tx=(pos*o.sx+Math.max(0,pos-vh*.06)*o.si)*k;
-    if(o.max)ty=Math.max(-o.max,Math.min(o.max,ty));
-    o.on=true;o.el.style.translate=tx.toFixed(1)+'px '+ty.toFixed(1)+'px';
-  }
-};
-const plxMeasure=()=>{
-  vh=innerHeight;mob=innerWidth<820;heroH=$('#hero').offsetHeight;
-  plx.forEach(o=>{o.el.style.translate='';o.on=false;});
-  const y=scrollY;
-  plx.forEach(o=>{const b=o.el.getBoundingClientRect();o.h=b.height;o.c=b.top+y+b.height/2;});
-  grids.forEach(g=>{const b=g.sec.getBoundingClientRect();g.top=b.top+y;g.h=b.height;});
-  plxUpdate(y);
-};
-let mq=0;const remeasure=()=>{cancelAnimationFrame(mq);mq=requestAnimationFrame(plxMeasure);};
-addEventListener('resize',remeasure);addEventListener('load',remeasure);
-if(PLX){
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(remeasure);
-  if(window.ResizeObserver)new ResizeObserver(remeasure).observe(document.body);
-  /* the pinned hero reports its stuck position to anchor links — send those to the real top */
-  $$('a[href="#hero"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();scrollTo({top:0});history.replaceState(null,'',location.pathname+location.search);}));
-}
+  float sz = u_mob > 0.5 ? 0.9 + 1.1 * s3 : 1.0 + 1.3 * s3;
+  sz = mix(sz, u_mob > 0.5 ? 1.5 : 1.9, a * txt);
+  sz = mix(sz, u_colS * 0.8, b);
+  sz = mix(sz, u_mob > 0.5 ? 1.5 : 1.8, c);
+  float g = 0.55 + 0.4 * s2;
+  g = mix(g, 0.96, a * txt);
+  g = mix(g, a_g, b);
+  g = mix(g, 0.8, c);
+  vec2 z = vec2(x, y) / u_res * 2.0 - 1.0;
+  gl_Position = vec4(z.x, -z.y, 0.0, 1.0);
+  float px = sz * u_dpr;
+  gl_PointSize = max(px, 2.0);
+  v_k = min(px / 2.0, 1.0);
+  v_c = vec4(g, g, g * 0.985, al);
+}`;
+        const FS = `
+precision mediump float;
+varying vec4 v_c; varying float v_k;
+void main(){
+  float e = length(gl_PointCoord - 0.5);
+  float a = (1.0 - smoothstep(0.3, 0.5, e)) * v_c.a * v_k;
+  gl_FragColor = vec4(v_c.rgb * a, a);
+}`;
 
-/* ---------- count-up stats ---------- */
-const cio=new IntersectionObserver(es=>es.forEach(e=>{
-  if(!e.isIntersecting)return;cio.unobserve(e.target);
-  const el=e.target,t=+el.dataset.count,st=performance.now();
-  const tick=n=>{const p=Math.min(1,(n-st)/900);el.innerHTML=Math.round(t*(1-Math.pow(1-p,3)))+'<i>+</i>';if(p<1)requestAnimationFrame(tick);};
-  requestAnimationFrame(tick);
-}),{threshold:.6});
-$$('[data-count]').forEach(el=>cio.observe(el));
+        /* ---------- renderers ---------- */
+        function makeGL(canvas) {
+          const gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, premultipliedAlpha: true });
+          if (!gl) return null;
+          try {
+            const sh = (type, src) => {
+              const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+              if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+              return s;
+            };
+            const prog = gl.createProgram();
+            gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+            gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+            gl.linkProgram(prog);
+            if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+            gl.useProgram(prog);
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            [['a_n', 2, 0], ['a_t', 2, 8], ['a_h', 2, 16], ['a_sc', 2, 24], ['a_r', 4, 32], ['a_d', 2, 48], ['a_g', 1, 56]].forEach(([n, size, off]) => {
+              const l = gl.getAttribLocation(prog, n);
+              if (l < 0) return;
+              gl.enableVertexAttribArray(l);
+              gl.vertexAttribPointer(l, size, gl.FLOAT, false, STRIDE * 4, off);
+            });
+            const u = {};
+            ['u_res', 'u_dpr', 'u_p', 'u_t', 'u_np', 'u_ps', 'u_qd', 'u_lo', 'u_span', 'u_zoom', 'u_colS', 'u_mob', 'u_ry', 'u_rh', 'u_w1', 'u_w2', 'u_w3']
+              .forEach(n => { u[n] = gl.getUniformLocation(prog, n); });
+            gl.uniform3f(u.u_w1, ...T_WORDS); gl.uniform3f(u.u_w2, ...T_HIST); gl.uniform3f(u.u_w3, ...T_SCAT);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            gl.clearColor(0, 0, 0, 0);
+            return {
+              gl: true,
+              upload(arr) { gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW); },
+              resize(w, h, dpr) {
+                canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+                gl.viewport(0, 0, canvas.width, canvas.height);
+                gl.uniform2f(u.u_res, w, h); gl.uniform1f(u.u_dpr, dpr);
+              },
+              draw(U, n) {
+                gl.uniform1f(u.u_p, U.p); gl.uniform1f(u.u_t, U.t); gl.uniform1f(u.u_np, U.np); gl.uniform1f(u.u_ps, U.ps);
+                gl.uniform1f(u.u_qd, U.qd); gl.uniform1f(u.u_lo, U.lo); gl.uniform1f(u.u_span, U.span); gl.uniform1f(u.u_zoom, U.zoom);
+                gl.uniform1f(u.u_colS, U.colS); gl.uniform1f(u.u_mob, U.mob ? 1 : 0); gl.uniform1f(u.u_ry, U.ry); gl.uniform1f(u.u_rh, U.rh);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.drawArrays(gl.POINTS, 0, n);
+              }
+            };
+          } catch (err) {
+            return null;
+          }
+        }
+        function make2D(canvas) {
+          const ctx = canvas.getContext('2d');
+          const o = { full: true };
+          let w = 0, h = 0;
+          return {
+            gl: false,
+            upload() { },
+            resize(W2, H2, dpr) { canvas.width = Math.round(W2 * dpr); canvas.height = Math.round(H2 * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); w = W2; h = H2; },
+            draw(U, n) {
+              ctx.clearRect(0, 0, w, h);
+              for (let i = 0; i < n; i++) {
+                particle(i, U, o);
+                if (o.al < .02) continue;
+                const s = Math.max(1.2, o.sz), g = Math.round(o.g * 255);
+                ctx.globalAlpha = o.al;
+                ctx.fillStyle = `rgb(${g},${g},${g})`;
+                ctx.fillRect(o.x - s / 2, o.y - s / 2, s, s);
+              }
+              ctx.globalAlpha = 1;
+            }
+          };
+        }
+        let renderer = makeGL(glCanvas);
+        if (!renderer) {
+          const fresh = glCanvas.cloneNode(false);
+          glCanvas.replaceWith(fresh);
+          glCanvas = fresh;
+          renderer = make2D(glCanvas);
+        }
+        const N = renderer.gl ? (stageEl.clientWidth < 680 ? 5200 : 11000) : 2600;
+        const D = makeData(N);
+        A = new Float32Array(N * STRIDE);
 
-/* ---------- rail: dots + WXI index ---------- */
-const secs=['hero','about','research','pubs','log','contact'].map(id=>document.getElementById(id));
-const dots=$$('#dots a'), wxi=$('#wxi b'), rail=$('#rail');
-let ticking=false;
-const onScroll=()=>{
-  if(ticking)return;ticking=true;
-  requestAnimationFrame(()=>{
-    ticking=false;
-    const y=scrollY, max=document.documentElement.scrollHeight-innerHeight;
-    const p=max>0?y/max:0;
-    wxi.textContent=(1000+p*103.42).toFixed(2);
-    let cur=0;
-    secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<=innerHeight*.5)cur=i;});
-    dots.forEach((d,i)=>d.classList.toggle('on',i===cur));
-    $$('nav a').forEach((a,i)=>a.classList.toggle('cur',i===cur-1));
-    rail.classList.toggle('onlight',secs[3].getBoundingClientRect().top<innerHeight*.5&&secs[3].getBoundingClientRect().bottom>innerHeight*.5);
-    plxUpdate(y);
-    const hv=y<heroH;
-    if(hv!==heroOn){heroOn=hv;if(PLX)secs[0].style.visibility=hv?'':'hidden';}
-  });
-};
-let heroOn=true;
-plxMeasure();
-addEventListener('scroll',onScroll,{passive:true});onScroll();
+        /* ---------- layout: every particle's target in every act, uploaded once ---------- */
+        let W = 0, H = 0, DPR = 1, mobile = false, R = null, qBox = null, colS = 3, heroTop = 0, span = 1;
+        function layout() {
+          W = stageEl.clientWidth; H = stageEl.clientHeight; mobile = W < 680;
+          DPR = Math.min(devicePixelRatio || 1, mobile ? 1.75 : 2);
+          R = mobile ? { x: 46, y: Math.max(84, H * .12), w: W - 66, h: H * .31 } : { x: W * .535, y: H * .21, w: W * .4, h: H * .56 };
+          heroTop = hero.getBoundingClientRect().top + scrollY;
+          span = Math.max(1, hero.offsetHeight - stageEl.offsetHeight);
+          renderer.resize(W, H, DPR);
+          uiCanvas.width = Math.round(W * DPR); uiCanvas.height = Math.round(H * DPR);
+          ui.setTransform(DPR, 0, 0, DPR, 0, 0);
+          const put = (i, k, v) => { A[i * STRIDE + k] = v; };
 
-/* ---------- hero canvas: drifting price paths ---------- */
-const hc=$('#heroCanvas'),hx=hc.getContext('2d');
-let W,H,dpr=Math.min(devicePixelRatio||1,2);
-const sizeHero=()=>{W=hc.clientWidth;H=hc.clientHeight;hc.width=W*dpr;hc.height=H*dpr;hx.setTransform(dpr,0,0,dpr,0,0);};
-sizeHero();addEventListener('resize',sizeHero);
-const N=220;
-const mkSeries=(seed,vol,drift)=>{const r=mulberry(seed);let v=.5+r()*.2;const pts=[];for(let i=0;i<N;i++){v+=(r()-.5)*vol+drift;v=Math.max(.08,Math.min(.92,v));pts.push(v);}return{r,vol,drift,pts,disp:pts[pts.length-1]};};
-const series=[
- Object.assign(mkSeries(42,.024,.0009),{col:'rgba(52,211,153,',w:1.6,glow:'#34d399'}),
- Object.assign(mkSeries(7,.03,-.0002),{col:'rgba(232,237,242,',w:1,glow:'#94a3b8'}),
- Object.assign(mkSeries(99,.04,.0004),{col:'rgba(251,191,36,',w:1,glow:'#fbbf24'}),
-];
-/* crosshair (desktop only) */
-let cmx=-1,cmy=-1,tmx=0,tmy=0,hmx=0,hmy=0;
-if(matchMedia('(pointer:fine)').matches){
-  const heroSec=$('#hero');
-  heroSec.addEventListener('mousemove',e=>{const b=hc.getBoundingClientRect();cmx=(e.clientX-b.left)*W/b.width;cmy=(e.clientY-b.top)*H/b.height;tmx=(e.clientX/innerWidth-.5)*2;tmy=(e.clientY/innerHeight-.5)*2;});
-  heroSec.addEventListener('mouseleave',()=>{cmx=cmy=-1;tmx=tmy=0;});
-}
-let off=0,dist=0,drewStatic=false;
-const SPEED=.45; /* px per frame — calm conveyor drift */
-/* hero depth: the section is pinned, so its layers travel on their own —
-   kicker fastest, name slower, tagline slowest; the two name lines slide apart;
-   the chart recedes and dims while the next section slides over it. Pointer adds a few px of sway. */
-const hWrap=$('#hero .wrap'),hKick=$('.hero-kick'),hH1=$('#hero h1'),hSub=$('.hero-sub'),hLs=$$('#hero .hl'),hShade=$('.hero-shade'),hHint=$('.scrollhint');
-const pinQ=matchMedia('(min-height:520px)');
-let lastHP=-1,lastHM=9;
-const heroPlx=()=>{
-  const y=scrollY,p=Math.min(1,y/heroH);
-  hmx+=(tmx-hmx)*.06;hmy+=(tmy-hmy)*.06;
-  if(Math.abs(p-lastHP)<.0004&&Math.abs(hmx-lastHM)<.0004)return;
-  lastHP=p;lastHM=hmx;
-  const d=pinQ.matches?-1:.4;
-  hKick.style.transform=`translate3d(${(-hmx*6).toFixed(1)}px,${(d*y*.62-hmy*4).toFixed(1)}px,0)`;
-  hH1.style.transform=`translate3d(${(-hmx*16).toFixed(1)}px,${(d*y*.4-hmy*9).toFixed(1)}px,0)`;
-  hSub.style.transform=`translate3d(${(-hmx*9).toFixed(1)}px,${(d*y*.22-hmy*5).toFixed(1)}px,0)`;
-  hLs[0].style.transform=`translate3d(${(-p*70).toFixed(1)}px,0,0)`;
-  hLs[1].style.transform=`translate3d(${(p*120).toFixed(1)}px,0,0)`;
-  hWrap.style.opacity=Math.max(0,1-p*1.3).toFixed(3);
-  hHint.style.opacity=Math.max(0,1-p*5).toFixed(3);
-  hc.style.transform=`scale(${(1+p*.14).toFixed(4)})`;
-  hShade.style.opacity=(p*.82).toFixed(3);
-};
-const drawHero=()=>{
-  requestAnimationFrame(drawHero);
-  if(!heroOn)return;
-  if(PLX)heroPlx();
-  if(reduced){if(drewStatic)return;drewStatic=true;}
-  const step=W/(N-3);
-  off+=SPEED;dist+=SPEED;
-  while(off>=step){off-=step;series.forEach(s=>{s.pts.push(Math.max(.08,Math.min(.92,s.pts[s.pts.length-1]+(s.r()-.5)*s.vol+s.drift)));s.pts.shift();});}
-  hx.clearRect(0,0,W,H);
-  /* grid drifts with the tape */
-  hx.strokeStyle='rgba(255,255,255,.04)';hx.lineWidth=1;hx.beginPath();
-  for(let gx=90-(dist%90);gx<W;gx+=90){hx.moveTo(gx,0);hx.lineTo(gx,H);}
-  for(let gy=0;gy<H;gy+=90){hx.moveTo(0,gy);hx.lineTo(W,gy);}
-  hx.stroke();
-  /* axis labels */
-  hx.fillStyle='rgba(135,145,158,.5)';hx.font='10px IBM Plex Mono,monospace';
-  for(let gy=90;gy<H;gy+=180)hx.fillText((1200-gy).toFixed(0),W-46,gy-6);
-  series.forEach(s=>{
-    hx.beginPath();
-    s.pts.forEach((v,i)=>{const px=i*step-off,py=H*(1-v);i?hx.lineTo(px,py):hx.moveTo(px,py);});
-    hx.strokeStyle=s.col+'.75)';hx.lineWidth=s.w;hx.shadowColor=s.glow;hx.shadowBlur=s.w>1?9:0;hx.stroke();hx.shadowBlur=0;
-    /* fill under main series */
-    if(s.w>1){hx.lineTo(W,H);hx.lineTo(-step,H);hx.closePath();
-      const g=hx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(52,211,153,.14)');g.addColorStop(1,'rgba(52,211,153,0)');
-      hx.fillStyle=g;hx.fill();}
-    /* last-price chip — value eases toward target instead of jumping */
-    s.disp+=(s.pts[s.pts.length-1]-s.disp)*.045;
-    const py=H*(1-s.disp);
-    hx.fillStyle=s.col+'.95)';hx.fillRect(W-56,py-9,52,16);
-    hx.fillStyle='#06080d';hx.fillText((1000+s.disp*200).toFixed(2),W-52,py+3);
-  });
-  /* crosshair + readout */
-  if(cmx>=0&&cmy>=0&&cmy<=H&&!reduced){
-    hx.save();hx.setLineDash([4,4]);hx.strokeStyle='rgba(232,237,242,.2)';hx.lineWidth=1;
-    hx.beginPath();hx.moveTo(cmx,0);hx.lineTo(cmx,H);hx.moveTo(0,cmy);hx.lineTo(W,cmy);hx.stroke();hx.restore();
-    hx.fillStyle='rgba(13,20,29,.92)';hx.fillRect(W-62,cmy-9,58,16);
-    hx.strokeStyle='rgba(232,237,242,.3)';hx.strokeRect(W-62,cmy-9,58,16);
-    hx.fillStyle='#e8edf2';hx.fillText((1000+(1-cmy/H)*200).toFixed(2),W-56,cmy+3);
-  }
-};
-drawHero();
+          // act 0: a field of noise
+          const cx = R.x + R.w / 2, cy = R.y + R.h / 2;
+          for (let i = 0; i < N; i++) {
+            let x, y;
+            if (hash(i, 5) < (mobile ? .7 : .55)) {
+              x = mobile ? W * hash(i, 6) : W * (.2 + .8 * hash(i, 6));
+              y = mobile ? H * (.04 + .52 * hash(i, 7)) : H * (.05 + .98 * hash(i, 7));
+            } else {
+              const g = Math.sqrt(-2 * Math.log(Math.max(1e-6, hash(i, 8)))), th = 6.2832 * hash(i, 9);
+              x = cx + g * Math.cos(th) * R.w * .42;
+              y = cy + g * Math.sin(th) * R.h * .48;
+            }
+            put(i, 0, x); put(i, 1, y);
+            put(i, 8, D.s1[i]); put(i, 9, D.s2[i]); put(i, 10, D.s3[i]);
+          }
 
-/* ---------- OLS toy ---------- */
-const fc=$('#fitCanvas'),fx=fc.getContext('2d');
-let fitSeed=1,fitAnim=null;
-const sizeFit=()=>{fc.width=fc.clientWidth*dpr;fc.height=fc.clientHeight*dpr;fx.setTransform(dpr,0,0,dpr,0,0);};
-const runFit=()=>{
-  sizeFit();
-  const w=fc.clientWidth,h=fc.clientHeight,pad=34;
-  const r=mulberry(fitSeed*7919+13);
-  const b=.35+r()*.5,a=.15+r()*.2,n=85;
-  const pts=[];for(let i=0;i<n;i++){const x=r();const y=a+b*x+(r()-.5)*.34;pts.push([x,Math.max(.02,Math.min(.98,y))]);}
-  const X=x=>pad+x*(w-2*pad), Y=y=>h-pad-y*(h-2*pad);
-  /* real OLS */
-  const mx=pts.reduce((s,p)=>s+p[0],0)/n,my=pts.reduce((s,p)=>s+p[1],0)/n;
-  let sxy=0,sxx=0,sst=0,sse=0;
-  pts.forEach(p=>{sxy+=(p[0]-mx)*(p[1]-my);sxx+=(p[0]-mx)**2;});
-  const bh=sxy/sxx,ah=my-bh*mx;
-  pts.forEach(p=>{sst+=(p[1]-my)**2;sse+=(p[1]-(ah+bh*p[0]))**2;});
-  const r2=1-sse/sst, st=performance.now();
-  cancelAnimationFrame(fitAnim);
-  const draw=now=>{
-    const t=reduced?1:Math.min(1,(now-st)/1500);
-    fx.clearRect(0,0,w,h);
-    /* axes */
-    fx.strokeStyle='rgba(255,255,255,.14)';fx.lineWidth=1;fx.beginPath();
-    fx.moveTo(pad,pad*.6);fx.lineTo(pad,h-pad);fx.lineTo(w-pad*.6,h-pad);fx.stroke();
-    fx.fillStyle='rgba(135,145,158,.6)';fx.font='10px IBM Plex Mono,monospace';
-    fx.fillText('y',pad-16,pad*.7);fx.fillText('x',w-pad*.4,h-pad+4);
-    /* points pop in */
-    const shown=Math.floor(Math.min(1,t/.55)*n);
-    for(let i=0;i<shown;i++){const p=pts[i];
-      fx.beginPath();fx.arc(X(p[0]),Y(p[1]),2.4,0,7);fx.fillStyle='rgba(232,237,242,.55)';fx.fill();}
-    /* fitted line sweeps after points */
-    if(t>.55){const lt=(t-.55)/.45;
-      /* residuals faint */
-      if(lt>.6){fx.strokeStyle='rgba(248,113,113,.22)';fx.lineWidth=1;fx.beginPath();
-        pts.forEach(p=>{fx.moveTo(X(p[0]),Y(p[1]));fx.lineTo(X(p[0]),Y(ah+bh*p[0]));});fx.stroke();}
-      fx.beginPath();fx.moveTo(X(0),Y(ah));fx.lineTo(X(lt),Y(ah+bh*lt));
-      fx.strokeStyle='#34d399';fx.lineWidth=2;fx.shadowColor='#34d399';fx.shadowBlur=10;fx.stroke();fx.shadowBlur=0;}
-    if(t<1)fitAnim=requestAnimationFrame(draw);
-    else $('#est').textContent=`β̂ = ${bh.toFixed(3)} , R² = ${r2.toFixed(3)}`;
-  };
-  $('#est').textContent='estimating…';
-  fitAnim=requestAnimationFrame(draw);
-};
-new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){runFit();o.disconnect();}},{threshold:.4}).observe(fc);
-$('#refit').addEventListener('click',()=>{fitSeed++;runFit();});
-addEventListener('resize',()=>{if(fc.getBoundingClientRect().top<innerHeight)runFit();});
+          // act 1: one review, written in particles
+          const fs = Math.max(26, Math.min(mobile ? 46 : 86, R.w / 8.4));
+          const font = `italic 400 ${fs}px Georgia, "Times New Roman", serif`;
+          const off = document.createElement('canvas');
+          const oc = off.getContext('2d', { willReadFrequently: true });
+          oc.font = font;
+          const lines = [];
+          let line = '';
+          for (const word of DATA.quote.split(' ')) {
+            const test = line ? line + ' ' + word : word;
+            if (line && oc.measureText(test).width > R.w) { lines.push(line); line = word; } else line = test;
+          }
+          if (line) lines.push(line);
+          const lh = fs * 1.13, pad = Math.ceil(fs * .3);
+          const bw = Math.ceil(Math.max(...lines.map(l => oc.measureText(l).width))) + pad * 2;
+          const bh = Math.ceil(lines.length * lh) + pad * 2;
+          off.width = bw; off.height = bh;
+          oc.font = font; oc.fillStyle = '#fff';
+          lines.forEach((l, k) => oc.fillText(l, pad, pad + fs * .92 + k * lh));
+          const img = oc.getImageData(0, 0, bw, bh).data;
+          const ink = [];
+          for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) if (img[(y * bw + x) * 4 + 3] > 140) ink.push(x, y);
+          const M = ink.length / 2;
+          const ox = R.x - pad, oy = R.y + (R.h - bh) / 2;
+          qBox = { x: R.x, y: oy + pad, w: bw - pad * 2, h: bh - pad * 2 };
+          const K = Math.min(Math.round(N * .8), M);
+          const pick = new Uint32Array(M);
+          for (let k = 0; k < M; k++) pick[k] = k;
+          const rr = rng(11);
+          for (let k = 0; k < K; k++) { const j = k + Math.floor(rr() * (M - k)); const t = pick[k]; pick[k] = pick[j]; pick[j] = t; }
+          for (let i = 0; i < N; i++) {
+            if (i < K) {
+              const q = pick[i];
+              put(i, 2, ox + ink[2 * q] + (hash(i, 10) - .5) * .7);
+              put(i, 3, oy + ink[2 * q + 1] + (hash(i, 11) - .5) * .7);
+              put(i, 11, 1);
+            } else {
+              put(i, 2, A[i * STRIDE]); put(i, 3, A[i * STRIDE + 1]); put(i, 11, 0);
+            }
+          }
 
-/* ---------- research card sparklines ---------- */
-const sio=new IntersectionObserver(es=>es.forEach(e=>{
-  if(!e.isIntersecting)return;sio.unobserve(e.target);
-  const c=e.target,x=c.getContext('2d');
-  c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;x.setTransform(dpr,0,0,dpr,0,0);
-  const w=c.clientWidth,h=c.clientHeight,r=mulberry(+c.dataset.seed);
-  let v=.5;const pts=[];for(let i=0;i<80;i++){v+=(r()-.5)*.16;v=Math.max(.1,Math.min(.9,v));pts.push(v);}
-  const st=performance.now();
-  const dr=now=>{const t=reduced?1:Math.min(1,(now-st)/900);
-    x.clearRect(0,0,w,h);x.beginPath();
-    const m=Math.floor(t*pts.length);
-    for(let i=0;i<m;i++){const px=i/(pts.length-1)*w,py=h*.88-pts[i]*h*.72;i?x.lineTo(px,py):x.moveTo(px,py);}
-    x.strokeStyle='#34d399';x.lineWidth=1.5;x.stroke();
-    if(m>0){x.lineTo(m/(pts.length-1)*w,h);x.lineTo(0,h);x.closePath();
-      const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'rgba(52,211,153,.25)');g.addColorStop(1,'rgba(52,211,153,0)');
-      x.fillStyle=g;x.fill();}
-    if(t<1)requestAnimationFrame(dr);};
-  requestAnimationFrame(dr);
-}),{threshold:.4});
-$$('.spark').forEach(c=>sio.observe(c));
+          // act 2: every review becomes a score, stacked into a dot histogram that fills from the bottom
+          const FINE = 120, cnt = new Uint32Array(FINE);
+          for (let i = 0; i < N; i++) cnt[Math.min(FINE - 1, Math.floor((D.score[i] + 1) / 2 * FINE))]++;
+          let peak = 0;
+          for (const c of cnt) peak = Math.max(peak, c);
+          colS = Math.sqrt(R.h * .9 / (peak / (R.w / FINE)));
+          const BAR = 3, cw = colS * BAR, cols = Math.ceil(R.w / cw), fill = new Uint32Array(cols);
+          const row = new Uint32Array(N);
+                    for (let i = 0; i < N; i++) {
+            const xs = (D.score[i] + 1) / 2 * R.w;
+            const c = Math.min(cols - 1, Math.floor(xs / cw));
+            const k = fill[c]++;
+            row[i] = Math.floor(k / BAR);
+            put(i, 4, R.x + c * cw + (k % BAR + .5) * colS);
+            put(i, 5, R.y + R.h - (row[i] + .5) * colS);
+            put(i, 6, R.x + xs);           // act 3 uses the exact score on x
+            put(i, 7, D.ret[i]);
+            put(i, 14, .5 + .45 * (D.score[i] + 1) / 2);
+          }
+          // staggers by rank, so the same number of dots is in flight at every moment
+          const byRow = Array.from({ length: N }, (_, i) => i).sort((a, b) => row[a] - row[b] || D.s1[a] - D.s1[b]);
+          byRow.forEach((i, r) => put(i, 12, .85 * r / N + .15 * D.s1[i]));        // bottom rows land first
+          const byScore = Array.from({ length: N }, (_, i) => i).sort((a, b) => D.score[a] - D.score[b]);
+          byScore.forEach((i, r) => put(i, 13, .8 * r / N + .2 * D.s2[i]));        // scatter opens left to right
+          renderer.upload(A);
+          uiKey = '';
+        }
 
-/* ---------- contact pulse ---------- */
-const pc=$('#pulseCanvas'),px=pc.getContext('2d');
-let pOn=false;
-new IntersectionObserver(es=>pOn=es[0].isIntersecting).observe(pc);
-const sizeP=()=>{pc.width=pc.clientWidth*dpr;pc.height=pc.clientHeight*dpr;px.setTransform(dpr,0,0,dpr,0,0);};
-sizeP();addEventListener('resize',sizeP);
-let pt=0;
-const drawP=()=>{
-  requestAnimationFrame(drawP);
-  if(!pOn||reduced)return;
-  pt+=.016;
-  const w=pc.clientWidth,h=pc.clientHeight;
-  px.clearRect(0,0,w,h);px.beginPath();
-  for(let i=0;i<=w;i+=2){
-    const ph=(i/w*6.28*2)-pt*2;
-    const beat=Math.exp(-Math.pow(((i/w*3+pt*.35)%1)-.5,2)*180);
-    const y=h*.55+Math.sin(ph)*4+beat*-h*.3;
-    i?px.lineTo(i,y):px.moveTo(i,y);}
-  px.strokeStyle='rgba(52,211,153,.55)';px.lineWidth=1.4;px.shadowColor='#34d399';px.shadowBlur=8;px.stroke();px.shadowBlur=0;
-};
-drawP();
-})();
-</script>
+        /* ---------- per-frame state ---------- */
+        const U = { p: 0, t: 0, np: 0, ps: 1, qd: 0, lo: 0, span: 1, zoom: 0, colS: 3, mob: false, ry: 0, rh: 1 };
+        function setUniforms(p, t) {
+          U.p = p; U.t = t; U.mob = mobile; U.colS = colS; U.ry = R.y; U.rh = R.h;
+          U.ps = mobile ? .6 : 1;
+          U.np = Math.min(p, .32);                                       // noise drifts up with the scroll (depth by dot)
+          U.qd = -(Math.min(Math.max(p, .2), .45) - .33) * 120 * U.ps;   // the quote keeps rising gently while it is held
+          U.zoom = ease(T_ZOOM[0], T_ZOOM[1], p);
+          const s0 = 5.4 * D.sd, s1 = (D.bmax - D.bmin) * 1.7;
+          U.span = s0 * Math.pow(s1 / s0, U.zoom);
+          U.lo = lerp(D.my, (D.bmin + D.bmax) / 2, U.zoom) - U.span / 2;
+        }
+        const yOf = v => R.y + R.h * (1 - (v - U.lo) / U.span);
+        const bxOf = v => R.x + (v + 1) / 2 * R.w;
+
+        const ptr = { on: false, x: -1, y: -1, dirty: false, touch: false };
+        let hoverIdx = -1, hoverBin = -1, tipKey = '', uiKey = '', hoverP = -1;
+        const probe = { full: false };
+        function findHover(p) {
+          hoverIdx = -1; hoverBin = -1;
+          const rad = finePointer ? 16 : 28;
+          let best = rad * rad;
+          if (p > .92) {
+            for (let j = 0; j < D.bins.length; j++) {
+              const dx = bxOf(D.bins[j][0]) - ptr.x, dy = yOf(D.bins[j][1]) - ptr.y, dd = dx * dx + dy * dy;
+              if (dd < Math.min(best, 196)) { best = dd; hoverBin = j; }
+            }
+            if (hoverBin >= 0) return;
+          }
+          for (let i = 0; i < N; i++) {
+            particle(i, U, probe);
+            if (probe.al < .12) continue;
+            const dx = probe.x - ptr.x, dy = probe.y - ptr.y, dd = dx * dx + dy * dy;
+            if (dd < best) { best = dd; hoverIdx = i; }
+          }
+        }
+        function hoverPoint() {
+          if (hoverBin >= 0) return [bxOf(D.bins[hoverBin][0]), yOf(D.bins[hoverBin][1])];
+          if (hoverIdx >= 0) { particle(hoverIdx, U, probe); return [probe.x, probe.y]; }
+          return null;
+        }
+
+        function render(p, pt, t) {
+          setUniforms(p, t);
+          renderer.draw(U, N);
+          if (!ptr.on) { hoverIdx = hoverBin = -1; }
+          else if (ptr.dirty || p !== hoverP) { findHover(p); ptr.dirty = false; hoverP = p; }
+          const hp = hoverPoint();
+          const key = p.toFixed(4) + '|' + hoverBin + '|' + hoverIdx;
+          if (key !== uiKey || hoverIdx >= 0) { drawUI(p, hp); uiKey = key; }
+          updateTip(p, hp);
+          setCopy(pt);
+        }
+
+        function label(text, x, y, size, color, alpha, align = 'left', weight = 600) {
+          if (alpha <= .002) return;
+          ui.globalAlpha = alpha; ui.fillStyle = color; ui.textAlign = align;
+          ui.font = `${weight} ${size}px ${MONO}`;
+          ui.fillText(text, x, y);
+        }
+
+        function drawUI(p, hp) {
+          ui.clearRect(0, 0, W, H);
+          ui.save();
+          ui.lineWidth = 1;
+          const fsS = mobile ? 9 : 10.5;
+
+          // running caption above the chart
+          const hy = R.y - (mobile ? 14 : 30), z2 = ease(.86, .92, p);
+          [['THOUSANDS OF REVIEWS · UNREAD', 1 - ease(.11, .16, p)],
+          ['ONE REVIEW, UP CLOSE', ease(.15, .2, p) * (1 - ease(.36, .41, p))],
+          ['EVERY REVIEW · SCORED', ease(.41, .46, p) * (1 - ease(.58, .63, p))],
+          ['SENTIMENT VS RETURN', ease(.62, .67, p) * (1 - z2)],
+          ['BINNED MEANS · FITTED LINE', z2]
+          ].forEach(([t, a]) => label(t, R.x, hy, fsS, INK, a * .9));
+          label('ILLUSTRATIVE DATA', R.x + R.w, hy, fsS, MUTED, .7 * ease(.03, .1, p), 'right');
+
+          // the LLM reads the review: the score bar fills while the quote is held
+          const qa = ease(.24, .29, p) * (1 - ease(.36, .42, p));
+          if (qa > .002) {
+            const y0 = qBox.y + qBox.h + U.qd + (mobile ? 24 : 36);
+            const bx = R.x + (mobile ? 104 : 128), bw = mobile ? 110 : 150;
+            const fillT = ss((p - .25) / .09);
+            label('LLM SENTIMENT', R.x, y0, fsS, MUTED, qa);
+            ui.globalAlpha = qa;
+            ui.fillStyle = 'rgba(242, 241, 237, .14)'; ui.fillRect(bx, y0 - 5, bw, 3);
+            ui.fillStyle = INK;
+            ui.fillRect(bx + bw / 2, y0 - 5, bw / 2 * DATA.quoteScore * fillT, 3);
+            ui.fillRect(bx + bw / 2 - .5, y0 - 9, 1, 11);
+            label(signed(DATA.quoteScore * fillT, 2), bx + bw + 12, y0, fsS + 1, INK, qa);
+          }
+
+          // x axis: sentiment
+          const xa = ease(.38, .47, p);
+          if (xa > .002) {
+            const y0 = R.y + R.h + 12;
+            ui.strokeStyle = INK; ui.globalAlpha = xa * .45;
+            ui.beginPath(); ui.moveTo(R.x, y0 + .5); ui.lineTo(R.x + R.w, y0 + .5); ui.stroke();
+            [[-1, 'NEGATIVE', 'left'], [0, 'NEUTRAL', 'center'], [1, 'POSITIVE', 'right']].forEach(([v, t, al]) => {
+              const x = Math.round(bxOf(v)) + .5;
+              ui.globalAlpha = xa * .45; ui.beginPath(); ui.moveTo(x, y0); ui.lineTo(x, y0 + 5); ui.stroke();
+              label(t, x, y0 + 18, fsS - 1, MUTED, xa * .85, al);
+            });
+            if (!mobile) label('LLM SENTIMENT SCORE', R.x + R.w, y0 + 36, fsS - 1, MUTED, xa * .55, 'right');
+          }
+
+          // y axis: returns, rescaled as we zoom into the signal
+          const ya = ease(.6, .7, p);
+          if (ya > .002) {
+            const x0 = Math.round(R.x - 12) + .5;
+            ui.strokeStyle = INK; ui.globalAlpha = ya * .45;
+            ui.beginPath(); ui.moveTo(x0, R.y); ui.lineTo(x0, R.y + R.h); ui.stroke();
+            const raw = U.span / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+            const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+            for (let k = Math.ceil(U.lo / step); k * step <= U.lo + U.span + 1e-9; k++) { // ticks without numbers: the data is illustrative
+              const y = Math.round(yOf(k * step)) + .5;
+              ui.globalAlpha = ya * .45; ui.beginPath(); ui.moveTo(x0 - 5, y); ui.lineTo(x0, y); ui.stroke();
+            }
+            const yz = yOf(0);
+            if (yz > R.y && yz < R.y + R.h) {
+              ui.globalAlpha = ya * .22; ui.setLineDash([3, 6]);
+              ui.beginPath(); ui.moveTo(R.x, Math.round(yz) + .5); ui.lineTo(R.x + R.w, Math.round(yz) + .5); ui.stroke();
+              ui.setLineDash([]);
+            }
+            if (!mobile) label('RETURN', x0 - 9, R.y - 10, fsS - 1, MUTED, ya * .8, 'right');
+          }
+
+          // the signal: binned means and the fitted line, in the one accent colour (soft halo, no blur filter)
+          const B = D.bins.length;
+          const lt = ss((p - T_LINE[0]) / (T_LINE[1] - T_LINE[0]));
+          if (lt > 0) {
+            const a0 = D.bins[0][0], a1 = lerp(a0, D.bins[B - 1][0], lt);
+            ui.strokeStyle = SIGNAL; ui.lineCap = 'round';
+            ui.beginPath(); ui.moveTo(bxOf(a0), yOf(D.icpt + D.slope * a0)); ui.lineTo(bxOf(a1), yOf(D.icpt + D.slope * a1));
+            ui.globalAlpha = .16; ui.lineWidth = 7; ui.stroke();
+            ui.globalAlpha = 1; ui.lineWidth = 2; ui.stroke();
+          }
+          const r0 = mobile ? 3.3 : 4.4, binLen = (T_BINS[1] - T_BINS[0]) * .35;
+          for (let j = 0; j < B; j++) {
+            const st = T_BINS[0] + j / (B - 1) * (T_BINS[1] - T_BINS[0] - binLen);
+            const s = ss((p - st) / binLen);
+            if (s <= 0) continue;
+            const x = bxOf(D.bins[j][0]), y = yOf(D.bins[j][1]), r = r0 * (.4 + .6 * s);
+            ui.fillStyle = SIGNAL;
+            ui.globalAlpha = s * .14; ui.beginPath(); ui.arc(x, y, r * 2, 0, 6.2832); ui.fill();
+            ui.globalAlpha = s; ui.beginPath(); ui.arc(x, y, r, 0, 6.2832); ui.fill();
+          }
+
+          if (hp) {
+            ui.globalAlpha = 1; ui.strokeStyle = INK; ui.lineWidth = 1.5;
+            ui.beginPath(); ui.arc(hp[0], hp[1], hoverBin >= 0 ? 9 : 7, 0, 6.2832); ui.stroke();
+            if (hoverIdx >= 0) { ui.fillStyle = INK; ui.beginPath(); ui.arc(hp[0], hp[1], 2.4, 0, 6.2832); ui.fill(); }
+          }
+          ui.restore();
+        }
+
+        const setBar = s => {
+          tipBar.style.left = (s >= 0 ? 50 : 50 + s * 50) + '%';
+          tipBar.style.width = Math.abs(s) * 50 + '%';
+          tipScore.textContent = signed(s, 2);
+        };
+        let tipShown = false, tipW = 272, tipH = 150;
+        function updateTip(p, hp) {
+          if (!hp) {
+            if (tipShown) { tip.classList.remove('on'); tipShown = false; }
+            tipKey = '';
+            return;
+          }
+          const key = hoverBin >= 0 ? 'b' + hoverBin : 'd' + hoverIdx;
+          if (key !== tipKey) {
+            tipKey = key;
+            if (hoverBin >= 0) {
+              const [bx] = D.bins[hoverBin];
+              tipFilm.textContent = `Bin ${hoverBin + 1} of ${D.bins.length}`;
+              tipText.textContent = 'The average of every review in this bin.';
+              setBar(bx);
+              tipTag.textContent = 'Illustrative data';
+            } else {
+              const i = hoverIdx, rv = review(i);
+              tipFilm.textContent = `${rv.title} · #${fmt(i + 1)}`;
+              tipText.textContent = `“${rv.text}”`;
+              setBar(D.score[i]);
+              tipTag.textContent = 'Illustrative review';
+            }
+            tipW = tip.offsetWidth; tipH = tip.offsetHeight; // measured only when the content changes
+          }
+          let x = hp[0] + 18, y = hp[1] - tipH / 2;
+          if (x + tipW > W - 12) x = hp[0] - 18 - tipW;
+          x = Math.max(12, x);
+          y = Math.max(76, Math.min(H - tipH - 12, y));
+          tip.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+          if (!tipShown) { tip.classList.add('on'); tipShown = true; }
+        }
+
+        // copy: crossfades plus a slow continuous drift, written only when a value actually changes
+        const actState = acts.map(() => ({ o: -1, y: 1e9, v: '' }));
+        let stepNow = -1, lineNow = -1;
+        function setCopy(pt) {
+          acts.forEach((el, k) => {
+            const [a0, a1, b0, b1, mid] = ACT[k], st = actState[k];
+            const inn = a0 < 0 ? 1 : ss((pt - a0) / (a1 - a0)), out = 1 - ss((pt - b0) / (b1 - b0)), o = Math.min(inn, out);
+            const dy = (1 - inn) * 34 - (1 - out) * 34 + (mid - pt) * (mobile ? DRIFT * .45 : DRIFT);
+            const v = o > .004 ? 'visible' : 'hidden';
+            if (v !== st.v) { el.style.visibility = v; st.v = v; }
+            if (v === 'hidden') return;
+            if (Math.abs(o - st.o) > .002) { el.style.opacity = o.toFixed(3); st.o = o; }
+            if (Math.abs(dy - st.y) > .05) { el.style.transform = `translate3d(0, ${dy.toFixed(2)}px, 0)`; st.y = dy; }
+          });
+          const s = pt < .17 ? 0 : pt < .4 ? 1 : pt < .6 ? 2 : 3;
+          if (s !== stepNow) { stepItems.forEach((li, k) => li.classList.toggle('on', k === s)); stepNow = s; }
+          if (Math.abs(pt - lineNow) > .0005) { progressLine.style.transform = `scaleX(${pt.toFixed(4)})`; lineNow = pt; }
+        }
+
+        /* ---------- loop: eased progress from the cached hero position (no layout reads while scrolling) ---------- */
+        const progressNow = () => clamp01((scrollY - heroTop) / span);
+        const TAU = wheelSmoothing ? 45 : 85; // ms; the wheel smoother already glides, so the scene only needs a little easing
+        let target = 0, cur = 0, raf = 0, last = 0, inView = true;
+        function tick(now) {
+          raf = 0;
+          const dt = last ? Math.min(now - last, 64) : 16;
+          last = now;
+          cur += (target - cur) * (1 - Math.exp(-dt / TAU));
+          if (Math.abs(target - cur) < 2e-5) cur = target;
+          const t = reduced ? 0 : (now / 1000) % 3600;
+          render(reduced ? 1 : cur, reduced ? 0 : cur, t);
+          // keep breathing while the noise and the quote are on screen; once settled in the charts, idle until something changes
+          if (!reduced && inView && (cur !== target || cur < .58 || hoverIdx >= 0)) raf = requestAnimationFrame(tick);
+          else last = 0;
+        }
+        const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
+        // hover: only after the mouse really moves, never while the page is scrolling under a still cursor
+        stageEl.addEventListener('pointermove', e => {
+          if (e.pointerType !== 'mouse') return;
+          const b = stageEl.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+          if (Math.abs(x - ptr.x) < .5 && Math.abs(y - ptr.y) < .5) return;
+          ptr.x = x; ptr.y = y; ptr.on = true; ptr.dirty = true; ptr.touch = false;
+          kick();
+        });
+        stageEl.addEventListener('pointerleave', () => { if (!ptr.touch) { ptr.on = false; kick(); } });
+        if (!finePointer) {
+          stageEl.addEventListener('click', e => {
+            const b = stageEl.getBoundingClientRect();
+            ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.on = true; ptr.dirty = true; ptr.touch = true;
+            kick();
+          });
+        }
+        addEventListener('scroll', () => {
+          target = progressNow();
+          if (ptr.on) { ptr.on = false; }
+          kick();
+        }, { passive: true });
+
+        let lastW = 0, lastH = 0;
+        const relayout = () => {
+          if (stageEl.clientWidth === lastW && stageEl.clientHeight === lastH) { heroTop = hero.getBoundingClientRect().top + scrollY; span = Math.max(1, hero.offsetHeight - stageEl.offsetHeight); return; }
+          lastW = stageEl.clientWidth; lastH = stageEl.clientHeight;
+          layout(); target = cur = progressNow(); kick();
+        };
+        addEventListener('resize', relayout);
+        addEventListener('load', relayout);
+        if ('IntersectionObserver' in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; if (inView) kick(); }).observe(hero);
+
+        layout();
+        lastW = W; lastH = H;
+        target = cur = progressNow();
+        kick();
+
+        /* ---------- page-wide inertial wheel scrolling (desktop mouse and trackpad only) ----------
+           Mouse wheels move in 100px notches; this turns each notch into a short glide.
+           Keyboard, scrollbar, links and touch keep the browser's own scrolling. */
+        if (wheelSmoothing) {
+          let cy = scrollY, ty = scrollY, run = false, lastT = 0, setY = -1;
+          const maxY = () => document.documentElement.scrollHeight - innerHeight;
+          const step = now => {
+            if (!run) { lastT = 0; return; }
+            const dt = lastT ? Math.min(now - lastT, 50) : 16;
+            lastT = now;
+            cy += (ty - cy) * (1 - Math.exp(-dt / 115));
+            if (Math.abs(ty - cy) < .35) cy = ty;
+            setY = cy;
+            window.scrollTo({ top: cy, behavior: 'instant' });
+            if (cy !== ty) requestAnimationFrame(step); else { run = false; lastT = 0; }
+          };
+          addEventListener('wheel', e => {
+            if (e.ctrlKey || e.defaultPrevented || document.body.classList.contains('menu-open')) return;
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+            e.preventDefault();
+            const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight * .9 : 1);
+            if (!run) cy = ty = scrollY;
+            ty = Math.max(0, Math.min(maxY(), ty + d));
+            if (!run) { run = true; lastT = 0; requestAnimationFrame(step); }
+          }, { passive: false });
+          addEventListener('scroll', () => {
+            if (run && Math.abs(scrollY - setY) > 2) run = false; // a key press, the scrollbar or a link took over
+            if (!run) cy = ty = scrollY;
+          }, { passive: true });
+        }
+      }
+
+      if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        const visual = document.querySelector('.research-visual');
+        const steps = [...document.querySelectorAll('.research-step')];
+        const stepObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const index = entry.target.dataset.step;
+              visual.dataset.current = index;
+              steps.forEach(step => step.classList.toggle('is-active', step.dataset.step === index));
+            }
+          });
+        }, { rootMargin: '-35% 0px -35% 0px' });
+        steps.forEach(step => stepObserver.observe(step));
+      } else {
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+      }
+
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.querySelector('.site-nav');
+      function closeMenu() {
+        nav.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open navigation');
+      }
+      toggle.addEventListener('click', () => {
+        const open = !nav.classList.contains('is-open');
+        nav.classList.toggle('is-open', open);
+        document.body.classList.toggle('menu-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      });
+      nav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+      addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
+    })();
+  </script>
 </body>
+
 </html>
